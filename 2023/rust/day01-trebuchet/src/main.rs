@@ -1,6 +1,14 @@
 // Task:
+// Part 1:
 // - Parse a file line by line
-// - For every line, combine the first and last digit
+// - For every line
+//      - combine the first and last digit
+// - Build the sum
+// Part 2:
+// - Parse a file line by line
+// - For every line
+//      - combine the first and last digit
+//      - counting words of digits (e.g. one, two, three, ...)
 // - Build the sum
 
 use std::collections::HashMap;
