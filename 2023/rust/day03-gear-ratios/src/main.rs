@@ -1,17 +1,21 @@
 // Task:
 // Part 1:
-// - add up any number adjacent to a symbol, even diagonally
+// - add up any part numbers adjacent to a symbol, even diagonally
 // - periods (.) do not count as a symbol
 // Part 2:
-// - ...
+// - if the symbol ('*') touches exactly two part numbers
+// - multiply two part numbers
+// - calculate sum
 
 fn main() {
     let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
-    let sum1 = solve1(input);
+    let sum1 = solve1(&input);
+    let sum2 = solve2(&input);
     println!("Sum for Part 1: {}", sum1);
+    println!("Sum for Part 2: {}", sum2);
 }
 
-fn solve1(input: Vec<&str>) -> u32 {
+fn solve1(input: &Vec<&str>) -> u32 {
     let mut row_index = 0;
 
     let mut part_numbers: Vec<PartNumber> = Vec::new();
@@ -37,7 +41,33 @@ fn solve1(input: Vec<&str>) -> u32 {
     sum
 }
 
-#[derive(Debug, PartialEq, Eq)]
+fn solve2(input: &Vec<&str>) -> u32 {
+    let mut row_index = 0;
+
+    let mut part_numbers: Vec<PartNumber> = Vec::new();
+    let mut symbols: Vec<Symbol> = Vec::new();
+
+    for line in input {
+        let mut new_part_numbers = get_part_numbers(line, row_index);
+        part_numbers.append(&mut new_part_numbers);
+        let mut new_symbols = get_symbols(line, row_index);
+        symbols.append(&mut new_symbols);
+        row_index += 1;
+    }
+
+    let gears: Vec<Symbol> = symbols.into_iter().filter(|s| s.value == '*').collect();
+
+    let mut sum = 0;
+    for gear in gears {
+        let parts = gear.touches(&part_numbers);
+        if parts.len() == 2 {
+            sum += parts[0].value * parts[1].value
+        }
+    }
+    sum
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 struct PartNumber {
     value: u32,
     row: u32,
@@ -72,6 +102,18 @@ impl PartNumber {
             return false;
         }
         return true;
+    }
+}
+
+impl Symbol {
+    fn touches(self: &Self, part_numbers: &Vec<PartNumber>) -> Vec<PartNumber> {
+        let mut touched: Vec<PartNumber> = Vec::new();
+        for part_number in part_numbers {
+            if part_number.touches(self) {
+                touched.push(part_number.to_owned());
+            }
+        }
+        touched
     }
 }
 
@@ -322,9 +364,16 @@ mod tests {
     }
 
     #[test]
-    fn can_calculate_sum_for_sample_input() {
+    fn can_calculate_sum_for_sample_input_part1() {
         let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
-        let sum = solve1(input);
+        let sum = solve1(&input);
         assert_eq!(sum, 4361);
+    }
+
+    #[test]
+    fn can_calculate_sum_for_sample_input_part2() {
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
+        let sum = solve2(&input);
+        assert_eq!(sum, 467835);
     }
 }
