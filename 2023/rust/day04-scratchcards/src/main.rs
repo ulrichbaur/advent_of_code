@@ -43,21 +43,30 @@ fn main() {
     let input = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
-    // let result2 = solve2(&input);
-    // println!("Result Part 2: {}", result2);
+    let result2 = solve2(&input);
+    println!("Result Part 2: {}", result2);
 }
 
 fn solve1(input: &Vec<&str>) -> u32 {
-    let mut sum = 0;
-    for line in input {
-        let card = Card::from(line);
-        sum += card.points();
-    }
-    sum
+    let cards = parse_input(input);
+
+    cards.iter().map(|card| card.points()).sum()
 }
 
 fn solve2(input: &Vec<&str>) -> u32 {
-    todo!()
+    let mut card_counts = vec![1; input.len()];
+    let cards = parse_input(input);
+
+    for (i, card) in cards.iter().enumerate() {
+        for j in i + 1..i + 1 + card.matches() as usize {
+            card_counts[j] += card_counts[i];
+        }
+    }
+    card_counts.iter().sum()
+}
+
+fn parse_input(input: &Vec<&str>) -> Vec<Card> {
+    input.into_iter().map(|s| Card::from(s)).collect()
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -68,13 +77,18 @@ struct Card {
 }
 
 impl Card {
-    fn points(self: &Self) -> u32 {
+    fn matches(self: &Self) -> u32 {
         let mut matches = 0;
         for drawn_card in &self.drawn {
             if self.winning.contains(drawn_card) {
                 matches += 1;
             }
         }
+        matches
+    }
+
+    fn points(self: &Self) -> u32 {
+        let matches = self.matches();
 
         let points = match matches {
             0 => 0,
@@ -201,5 +215,12 @@ mod tests {
         let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         assert_eq!(solve1(&input), 13);
+    }
+
+    #[test]
+    fn can_solve_part2_for_sample_input() {
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
+
+        assert_eq!(solve2(&input), 30);
     }
 }
