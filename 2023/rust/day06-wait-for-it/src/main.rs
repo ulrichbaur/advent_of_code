@@ -1,5 +1,3 @@
-use core::panic;
-
 // Task:
 // Part 1:
 // - Determine the amount of possible options to win a race
@@ -16,7 +14,6 @@ use core::panic;
 //   - Time: 10 9 8
 //   - Distance 5 4 3
 //   - is meant to be 1 race with 1098 record time over a distance of 543
-//
 fn main() {
     let input = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
