@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "day02-cube-conundrum"
+name = "day05-seed-fertilizer"
 version = "0.1.0"
