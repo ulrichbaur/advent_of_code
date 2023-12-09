@@ -14,26 +14,29 @@ use std::fmt::Display;
 // - Multiply rank with bid to get winning of hand
 // - Sum up the total winnings
 // Part 2:
-// - ...
+// - Now, J is actually a Joker
+// - Joker has the lowest card value, even lower than 2
+// - Joker upgrades hand type to the next best type
+// - Rest stays the same
 fn main() {
     let input = include_str!("../data/input.txt").lines().collect();
 
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
 
-    // let result2 = solve2(&input);
-    // println!("Result Part 2: {}", result2);
+    let result2 = solve2(&input);
+    println!("Result Part 2: {}", result2);
 }
 
 fn solve1(input: &Vec<&str>) -> u32 {
     let mut hands: HandVec = HandVec(vec![]);
     for line in input {
-        let hand = Hand::from(line);
+        let hand = Hand::from(line, 1);
         // println!("{:?}", hand.cards);
         hands.0.push(hand);
     }
     sort_vector_of_hands(&mut hands.0);
-    println!("{}", hands);
+    // println!("{}", hands);
 
     let mut sum = 0;
 
@@ -45,10 +48,25 @@ fn solve1(input: &Vec<&str>) -> u32 {
 }
 
 fn solve2(input: &Vec<&str>) -> u32 {
-    todo!()
+    let mut hands: HandVec = HandVec(vec![]);
+    for line in input {
+        let hand = Hand::from(line, 2);
+        // println!("{:?}", hand.cards);
+        hands.0.push(hand);
+    }
+    sort_vector_of_hands(&mut hands.0);
+    // println!("{}", hands);
+
+    let mut sum = 0;
+
+    for (i, hand) in hands.0.iter().enumerate() {
+        sum += (i + 1) as u32 * hand.bid;
+    }
+
+    sum
 }
 
-const CARD_TYPES: [CardType; 13] = [
+const CARD_TYPES_PART1: [CardType; 13] = [
     CardType::Two,
     CardType::Three,
     CardType::Four,
@@ -64,8 +82,25 @@ const CARD_TYPES: [CardType; 13] = [
     CardType::Ace,
 ];
 
+const CARD_TYPES_PART2: [CardType; 13] = [
+    CardType::Joker,
+    CardType::Two,
+    CardType::Three,
+    CardType::Four,
+    CardType::Five,
+    CardType::Six,
+    CardType::Seven,
+    CardType::Eight,
+    CardType::Nine,
+    CardType::Ten,
+    CardType::Queen,
+    CardType::King,
+    CardType::Ace,
+];
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 enum CardType {
+    Joker,
     Two,
     Three,
     Four,
@@ -93,41 +128,135 @@ enum HandType {
 }
 
 impl HandType {
-    fn from(hand: &Vec<Card>) -> HandType {
+    fn from(hand: &Vec<Card>, part: u32) -> HandType {
         let mut occurrences: Vec<(CardType, u32)> = vec![];
-        for card_type in CARD_TYPES {
-            let count = hand.iter().filter(|&x| x.card_type == card_type).count();
-            occurrences.push((card_type, count as u32));
-        }
-        occurrences.sort_by(|a, b| a.1.cmp(&b.1));
-        let highest = &occurrences[12];
-        let second_highest = &occurrences[11];
-        // println!("Hand: {:?} {:?}", highest, second_highest);
 
-        match highest.1 {
-            1 => HandType::HighCard,
-            2 => match second_highest.1 {
-                1 => HandType::Pair,
-                2 => HandType::TwoPair,
-                _ => panic!(
-                    "Failed to deduct hand type from {:?} {:?}",
-                    highest, second_highest
-                ),
-            },
-            3 => match second_highest.1 {
-                1 => HandType::ThreeOfAKind,
-                2 => HandType::FullHouse,
-                _ => panic!(
-                    "Failed to deduct hand type from {:?} {:?}",
-                    highest, second_highest
-                ),
-            },
-            4 => HandType::FourOfAKind,
-            5 => HandType::FiveOfAKind,
-            _ => panic!(
-                "Failed to deduct hand type from {:?} {:?}",
-                highest, second_highest
-            ),
+        match part {
+            1 => {
+                for card_type in CARD_TYPES_PART1 {
+                    let count = hand.iter().filter(|&x| x.card_type == card_type).count();
+                    occurrences.push((card_type, count as u32));
+                }
+                occurrences.sort_by(|a, b| a.1.cmp(&b.1));
+                let highest = &occurrences[12];
+                let second_highest = &occurrences[11];
+                // println!("Hand: {:?} {:?}", highest, second_highest);
+
+                match highest.1 {
+                    1 => HandType::HighCard,
+                    2 => match second_highest.1 {
+                        1 => HandType::Pair,
+                        2 => HandType::TwoPair,
+                        _ => panic!(
+                            "Failed to deduct hand type from {:?} {:?}",
+                            highest, second_highest
+                        ),
+                    },
+                    3 => match second_highest.1 {
+                        1 => HandType::ThreeOfAKind,
+                        2 => HandType::FullHouse,
+                        _ => panic!(
+                            "Failed to deduct hand type from {:?} {:?}",
+                            highest, second_highest
+                        ),
+                    },
+                    4 => HandType::FourOfAKind,
+                    5 => HandType::FiveOfAKind,
+                    _ => panic!(
+                        "Failed to deduct hand type from {:?} {:?}",
+                        highest, second_highest
+                    ),
+                }
+            }
+            2 => {
+                for card_type in CARD_TYPES_PART2 {
+                    let count = hand.iter().filter(|&x| x.card_type == card_type).count();
+                    occurrences.push((card_type, count as u32));
+                }
+                let joker_count = occurrences[0].1;
+                occurrences.sort_by(|a, b| a.1.cmp(&b.1));
+                let highest = &occurrences[12];
+                let second_highest = &occurrences[11];
+                // println!(
+                //     "Hand: {:?} {:?} with {} jokers",
+                //     highest, second_highest, joker_count
+                // );
+
+                match highest.1 {
+                    1 => match joker_count {
+                        0 => HandType::HighCard,
+                        1 => HandType::Pair,
+                        _ => panic!(
+                            "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                            highest, second_highest, joker_count
+                        ),
+                    },
+                    2 => match second_highest.1 {
+                        1 => match joker_count {
+                            0 => HandType::Pair,
+                            1 => HandType::ThreeOfAKind,
+                            2 => HandType::ThreeOfAKind,
+                            _ => panic!(
+                                "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                                highest, second_highest, joker_count
+                            ),
+                        },
+                        2 => match joker_count {
+                            0 => HandType::TwoPair,
+                            1 => HandType::FullHouse,
+                            2 => HandType::FourOfAKind,
+                            _ => panic!(
+                                "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                                highest, second_highest, joker_count
+                            ),
+                        },
+                        _ => panic!(
+                            "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                            highest, second_highest, joker_count
+                        ),
+                    },
+                    3 => match second_highest.1 {
+                        1 => match joker_count {
+                            0 => HandType::ThreeOfAKind,
+                            1 => HandType::FourOfAKind,
+                            3 => HandType::FourOfAKind,
+                            _ => panic!(
+                                "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                                highest, second_highest, joker_count
+                            ),
+                        },
+                        2 => match joker_count {
+                            0 => HandType::FullHouse,
+                            1 => HandType::FourOfAKind,
+                            2 => HandType::FiveOfAKind,
+                            3 => HandType::FiveOfAKind,
+                            _ => panic!(
+                                "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                                highest, second_highest, joker_count
+                            ),
+                        },
+                        _ => panic!(
+                            "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                            highest, second_highest, joker_count
+                        ),
+                    },
+                    4 => match joker_count {
+                        0 => HandType::FourOfAKind,
+                        1 => HandType::FiveOfAKind,
+                        4 => HandType::FiveOfAKind,
+                        _ => panic!(
+                            "Failed to deduct hand type from {:?} {:?} with {} jokers",
+                            highest, second_highest, joker_count
+                        ),
+                    },
+                    5 => HandType::FiveOfAKind,
+                    _ => panic!(
+                        "Failed to deduct hand type from {:?} {:?}",
+                        highest, second_highest
+                    ),
+                }
+            }
+            _ => todo!(),
         }
     }
 }
@@ -138,12 +267,16 @@ struct Card {
 }
 
 impl Card {
-    fn from(input_char: char) -> Card {
+    fn from(input_char: char, part: u32) -> Card {
         let card_type = match input_char {
             'A' => CardType::Ace,
             'K' => CardType::King,
             'Q' => CardType::Queen,
-            'J' => CardType::Jack,
+            'J' => match part {
+                1 => CardType::Jack,
+                2 => CardType::Joker,
+                _ => panic!("Unsupported part {}", part),
+            },
             'T' => CardType::Ten,
             '9' => CardType::Nine,
             '8' => CardType::Eight,
@@ -168,14 +301,14 @@ struct Hand {
 }
 
 impl Hand {
-    fn new(hand_input: &str, bid: u32) -> Hand {
+    fn new(hand_input: &str, bid: u32, part: u32) -> Hand {
         let mut cards = vec![];
         for card_input_char in hand_input.chars() {
-            let card = Card::from(card_input_char);
+            let card = Card::from(card_input_char, part);
             // println!("Parsed {:?}", card);
             cards.push(card);
         }
-        let hand_type = HandType::from(&cards);
+        let hand_type = HandType::from(&cards, part);
         // println!("{:?}", hand_type);
         Hand {
             cards,
@@ -184,12 +317,12 @@ impl Hand {
         }
     }
 
-    fn from(line: &str) -> Hand {
+    fn from(line: &str, part: u32) -> Hand {
         let terms: Vec<&str> = line.split(" ").collect();
         let hand_string = terms[0];
         let bid = terms[1].parse::<u32>().unwrap();
 
-        Hand::new(hand_string, bid)
+        Hand::new(hand_string, bid, part)
     }
 }
 
@@ -230,5 +363,32 @@ mod tests {
         let result = solve1(&input);
 
         assert_eq!(result, 6440);
+    }
+
+    #[test]
+    fn can_solve_part1_for_actual_input() {
+        let input = include_str!("../data/input.txt").lines().collect();
+
+        let result = solve1(&input);
+
+        assert_eq!(result, 250957639);
+    }
+
+    #[test]
+    fn can_solve_part2_for_sample_input() {
+        let input = include_str!("../data/sample_input.txt").lines().collect();
+
+        let result = solve2(&input);
+
+        assert_eq!(result, 5905);
+    }
+
+    #[test]
+    fn can_solve_part2_for_actual_input() {
+        let input = include_str!("../data/input.txt").lines().collect();
+
+        let result = solve2(&input);
+
+        assert_eq!(result, 251515496);
     }
 }
