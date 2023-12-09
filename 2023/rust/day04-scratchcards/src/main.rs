@@ -30,7 +30,7 @@
 // - Card 6 has 0 winning numbers -> 0 points
 // - Total: 13 points
 //
-// Part 1 Sample Solution:
+// Part 2 Sample Solution:
 // - 1 * Card 1 has 4 winning numbers (48, 83, 17, and 86) -> 1 copy of 4 cards (2, 3, 4, 5)
 // - 2 * Card 2 has 2 winning numbers (32 and 61) -> 2 copies of 2 cards (3, 4)
 // - 4 * Card 3 has 2 winning numbers (1 and 21) -> 4 copies of 2 cards (4, 5)
