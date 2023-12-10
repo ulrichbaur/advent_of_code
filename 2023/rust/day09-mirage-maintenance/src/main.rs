@@ -7,14 +7,14 @@
 //   - then, back fill the histories to extrapolate next value
 // - sum up extrapolated values
 // Part 2:
-// - ...
+// - now extrapolate at the beginning instead of the end
 fn main() {
     let input = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
 
-    // let result2 = solve2(&input);
-    // println!("Result Part 2: {}", result2);
+    let result2 = solve2(&input);
+    println!("Result Part 2: {}", result2);
 }
 
 fn solve1(input: &Vec<&str>) -> i64 {
@@ -27,19 +27,8 @@ fn solve1(input: &Vec<&str>) -> i64 {
     for line in input.iter() {
         let history = parse_history(line);
 
-        let mut histories: Vec<Vec<i64>> = vec![];
-        histories.push(history);
+        let mut histories = get_diff_histories_from_history(history);
 
-        let mut index = 0;
-        while histories.last().unwrap().iter().any(|&v| v != 0) {
-            let mut current_diff: Vec<i64> = vec![];
-            for i in 0..histories.last().unwrap().len() - 1 {
-                let diff = histories[index][i + 1] - histories[index][i];
-                current_diff.push(diff);
-            }
-            histories.push(current_diff);
-            index += 1;
-        }
         for i in 0..histories.len() - 1 {
             let current_index = histories.len() - (i + 1);
             let new_value = *histories[current_index - 1].last().unwrap()
@@ -55,7 +44,40 @@ fn solve1(input: &Vec<&str>) -> i64 {
 }
 
 fn solve2(input: &Vec<&str>) -> i64 {
-    todo!()
+    let mut sum = 0;
+    for line in input.iter() {
+        let history = parse_history(line);
+
+        let mut histories = get_diff_histories_from_history(history);
+
+        for i in 0..histories.len() - 1 {
+            let current_index = histories.len() - (i + 1);
+            let new_value = *histories[current_index - 1].first().unwrap()
+                - *histories[current_index].first().unwrap();
+            histories[current_index - 1].insert(0, new_value)
+        }
+
+        let value = *histories[0].first().unwrap();
+        sum += value;
+    }
+
+    sum
+}
+
+fn get_diff_histories_from_history(history: Vec<i64>) -> Vec<Vec<i64>> {
+    let mut histories = vec![history];
+    let mut index = 0;
+    while histories.last().unwrap().iter().any(|&v| v != 0) {
+        let mut current_diff: Vec<i64> = vec![];
+        for i in 0..histories.last().unwrap().len() - 1 {
+            let diff = histories[index][i + 1] - histories[index][i];
+            current_diff.push(diff);
+        }
+        histories.push(current_diff);
+        index += 1;
+    }
+
+    histories
 }
 
 fn parse_history(line: &str) -> Vec<i64> {
@@ -85,22 +107,20 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn can_solve_part2_for_sample_input() {
         let input = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve2(&input);
 
-        assert_eq!(result, 0);
+        assert_eq!(result, 114);
     }
 
     #[test]
-    #[ignore]
     fn can_solve_part2_for_actual_input() {
         let input = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2(&input);
 
-        assert_eq!(result, 0);
+        assert_eq!(result, 1211);
     }
 }
