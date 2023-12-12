@@ -14,31 +14,36 @@ use std::collections::VecDeque;
 //   - '.' ground; no pipe
 //   - 'S' starting position; pipe but sketch doesn't show direction
 // Part 2:
-// - ...
+// - Calculate the area enclosed by the loop
+// - Water can squeeze through pipes; it needs to be fully enclosed
 fn main() {
     let input = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
 
-    // let result2 = solve2(&input);
-    // println!("Result Part 2: {}", result2);
+    let result2 = solve2(&input);
+    println!("Result Part 2: {}", result2);
 }
 
 fn solve1(input: &Vec<&str>) -> i32 {
     let mut grid = get_grid(input);
 
+    // determine start position and pipe type
     let start_position = get_starting_pipe(&mut grid);
     print_grid(&grid);
 
+    // BFS to find the distance
     let mut distances: Vec<Vec<i32>> = vec![vec![-1; input[0].len()]; input.len()];
     distances[start_position.0 as usize][start_position.1 as usize] = 0;
 
+    // init explore loop
     let mut exploration_queue: VecDeque<(Vector2D, Vector2D)> = VecDeque::new();
     let connected_pipes = get_connected_pipes(&grid, start_position);
     for pipe in connected_pipes {
         exploration_queue.push_back((start_position, pipe));
     }
 
+    // explore loop
     while !exploration_queue.is_empty() {
         let (from, to) = exploration_queue.pop_back().unwrap();
 
@@ -46,26 +51,169 @@ fn solve1(input: &Vec<&str>) -> i32 {
             continue;
         }
         distances[to.0 as usize][to.1 as usize] = distances[from.0 as usize][from.1 as usize] + 1;
-        // println!(
-        //     "from: {:?} ({}) to: {:?} ({})",
-        //     from,
-        //     distances[from.0 as usize][from.1 as usize],
-        //     to,
-        //     distances[to.0 as usize][to.1 as usize]
-        // );
         let connected_pipes = get_connected_pipes(&grid, to);
         for pipe in connected_pipes {
             exploration_queue.push_front((to, pipe));
         }
     }
 
+    // calculate max distance
     distances.iter().fold(std::i32::MIN, |a, b| {
         a.max(b.iter().fold(std::i32::MIN, |c, d| c.max(*d)))
     })
 }
 
-fn solve2(input: &Vec<&str>) -> u64 {
-    todo!()
+fn solve2(input: &Vec<&str>) -> i32 {
+    let mut grid = get_grid(input);
+
+    // determine start position and pipe type
+    let start_position = get_starting_pipe(&mut grid);
+    print_grid(&grid);
+
+    // BFS to find the distance
+    let mut distances: Vec<Vec<i32>> = vec![vec![-1; input[0].len()]; input.len()];
+    distances[start_position.0 as usize][start_position.1 as usize] = 0;
+
+    // init explore loop
+    let mut exploration_queue: VecDeque<(Vector2D, Vector2D)> = VecDeque::new();
+    let connected_pipes = get_connected_pipes(&grid, start_position);
+    for pipe in connected_pipes {
+        exploration_queue.push_back((start_position, pipe));
+    }
+
+    // explore loop
+    while !exploration_queue.is_empty() {
+        let (from, to) = exploration_queue.pop_back().unwrap();
+
+        if distances[to.0 as usize][to.1 as usize] != -1 {
+            continue;
+        }
+        distances[to.0 as usize][to.1 as usize] = distances[from.0 as usize][from.1 as usize] + 1;
+        let connected_pipes = get_connected_pipes(&grid, to);
+        for pipe in connected_pipes {
+            exploration_queue.push_front((to, pipe));
+        }
+    }
+
+    // replace pipes not in loop with ground
+    for i in 0..grid.len() {
+        for j in 0..grid[0].len() {
+            let c = grid[i][j];
+            if c != '.' && distances[i][j] == -1 {
+                grid[i][j] = '.';
+            }
+        }
+    }
+    print_grid(&grid);
+
+    // create big grid that's double the size of the original to make pathfinding easier between pipes`
+    let mut big_grid: Vec<Vec<char>> = vec![vec![' '; grid[0].len() * 2]; grid.len() * 2];
+    let big_width = big_grid[0].len();
+    let big_height = big_grid.len();
+
+    // init top, bottom, left, and right with empty space
+    for i in 0..big_width {
+        big_grid[i][0] = '0';
+        big_grid[i][big_height - 1] = '0';
+    }
+    for i in 0..big_height {
+        big_grid[0][i] = '0';
+        big_grid[big_width - 1][i] = '0';
+    }
+
+    for row in 0..grid.len() {
+        for col in 0..grid[0].len() {
+            let c = grid[row][col];
+
+            // set pipes to original value
+            if c != '.' && distances[row][col] != -1 {
+                big_grid[row * 2][col * 2] = c;
+                continue;
+            }
+
+            // if it's on edge, already set to 0
+            if row == 0 || row == grid.len() - 1 || col == 0 || col == grid[0].len() - 1 {
+                continue;
+            }
+
+            // replace ground with I
+            big_grid[row * 2][col * 2] = 'I';
+        }
+    }
+
+    // walk through pipe west/east and north/south pairs and mark blocking connections with X
+    for row in 0..grid.len() {
+        for col in 0..grid[0].len() {
+            if col < grid.len() - 1 {
+                let west_pipe = grid[row][col];
+                let east_pipe = grid[row][col + 1];
+                match west_pipe {
+                    '-' | 'L' | 'F' => match east_pipe {
+                        '-' | 'J' | '7' => big_grid[row * 2][col * 2 + 1] = 'X',
+                        _ => print!(""),
+                    },
+                    _ => print!(""),
+                }
+            }
+            if row < grid.len() - 1 {
+                let north_pipe = grid[row][col];
+                let south_pipe = grid[row + 1][col];
+                match north_pipe {
+                    '|' | '7' | 'F' => match south_pipe {
+                        '|' | 'J' | 'L' => big_grid[row * 2 + 1][col * 2] = 'X',
+                        _ => print!(""),
+                    },
+                    _ => print!(""),
+                }
+            }
+        }
+    }
+
+    let big_bounds = Vector2D(big_height as i32, big_width as i32);
+    // from each 0, flood any Is or empty space with 0s
+    for row in 0..big_height {
+        for col in 0..big_width {
+            let c = big_grid[row][col];
+
+            // set pipes to original value
+            if c != '0' {
+                continue;
+            }
+
+            // depth first flood fill
+            let current_position = Vector2D(row as i32, col as i32);
+            let mut stack: VecDeque<Vector2D> = VecDeque::new();
+            stack.push_back(add_positions(&current_position, &UP));
+            stack.push_back(add_positions(&current_position, &LEFT));
+            stack.push_back(add_positions(&current_position, &DOWN));
+            stack.push_back(add_positions(&current_position, &RIGHT));
+
+            while !stack.is_empty() {
+                let next_position = stack.pop_back().unwrap();
+
+                // skip if not in bounds
+                if !position_is_in_bounds(&big_bounds, &next_position) {
+                    continue;
+                }
+
+                // skip if already blocking
+                let c = big_grid[next_position.0 as usize][next_position.1 as usize];
+                if c != ' ' && c != 'I' {
+                    continue;
+                }
+                big_grid[next_position.0 as usize][next_position.1 as usize] = '0';
+
+                // continue exploring
+
+                stack.push_back(add_positions(&next_position, &UP));
+                stack.push_back(add_positions(&next_position, &LEFT));
+                stack.push_back(add_positions(&next_position, &DOWN));
+                stack.push_back(add_positions(&next_position, &RIGHT));
+            }
+        }
+    }
+
+    big_grid.iter().flatten().filter(|&c| *c == 'I').count() as i32
 }
 
 fn get_grid(input: &Vec<&str>) -> Vec<Vec<char>> {
@@ -294,22 +442,47 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
-    fn can_solve_part2_for_sample_input() {
+    fn can_solve_part2_for_sample_input_1() {
         let input = include_str!("../data/sample_input_1.txt").lines().collect();
 
         let result = solve2(&input);
 
-        assert_eq!(result, 0);
+        assert_eq!(result, 1);
     }
 
     #[test]
-    #[ignore]
+    fn can_solve_part2_for_sample_input_2() {
+        let input = include_str!("../data/sample_input_2.txt").lines().collect();
+
+        let result = solve2(&input);
+
+        assert_eq!(result, 1);
+    }
+
+    #[test]
+    fn can_solve_part2_for_sample_input_3() {
+        let input = include_str!("../data/sample_input_3.txt").lines().collect();
+
+        let result = solve2(&input);
+
+        assert_eq!(result, 1);
+    }
+
+    #[test]
+    fn can_solve_part2_for_sample_input_4() {
+        let input = include_str!("../data/sample_input_4.txt").lines().collect();
+
+        let result = solve2(&input);
+
+        assert_eq!(result, 1);
+    }
+
+    #[test]
     fn can_solve_part2_for_actual_input() {
         let input = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2(&input);
 
-        assert_eq!(result, 0);
+        assert_eq!(result, 363);
     }
 }
