@@ -94,7 +94,7 @@ fn main() {
     let result1 = solve1(input);
     println!("Result Part 1: {}", result1);
 
-    println!("");
+    println!();
 
     let result2 = solve2(input);
     println!("Result Part 2: {}", result2);
@@ -170,12 +170,12 @@ fn parse_seeds(text: &str, part: u8) -> Vec<u64> {
 
     let seeds = match part {
         1 => terms[1]
-            .split(" ")
+            .split(' ')
             .filter_map(|s| s.parse::<u64>().ok())
             .collect(),
         2 => {
             let numbers: Vec<u64> = terms[1]
-                .split(" ")
+                .split(' ')
                 .filter_map(|s| s.parse::<u64>().ok())
                 .collect();
             let mut seeds = vec![];
@@ -207,7 +207,7 @@ struct Map {
 impl Map {
     fn from(input: &str) -> Self {
         let numbers: Vec<u64> = input
-            .split(" ")
+            .split(' ')
             .filter_map(|s| s.parse::<u64>().ok())
             .collect();
         Map {
@@ -222,17 +222,17 @@ impl Map {
         }
     }
 
-    fn is_input_in_src_range(self: &Self, src: u64) -> bool {
+    fn is_input_in_src_range(&self, src: u64) -> bool {
         src >= self.src.start && src <= self.src.end
     }
 
-    fn offset_of(self: &Self, src: u64) -> u64 {
+    fn offset_of(&self, src: u64) -> u64 {
         if !self.is_input_in_src_range(src) {
             panic!("{} does not exit in {:?}", src, self);
         }
         src - self.src.start
     }
-    fn map_src_to_dest(self: &Self, src: u64) -> u64 {
+    fn map_src_to_dest(&self, src: u64) -> u64 {
         if !self.is_input_in_src_range(src) {
             return src;
         }
@@ -242,8 +242,8 @@ impl Map {
     }
 }
 
-fn parse_vector_of_maps_from_string_vector(input: &Vec<&str>) -> Vec<Map> {
-    input.into_iter().map(|l| Map::from(l)).collect()
+fn parse_vector_of_maps_from_string_vector(input: &[&str]) -> Vec<Map> {
+    input.iter().map(|l| Map::from(l)).collect()
 }
 
 #[derive(Debug)]
@@ -259,7 +259,7 @@ struct SeedLocation {
 }
 
 impl SeedLocation {
-    fn from(input: &Vec<&str>, part: u8) -> SeedLocation {
+    fn from(input: &[&str], part: u8) -> SeedLocation {
         let seeds = parse_seeds(input[0], part);
 
         let seed_to_soil_lines: Vec<&str> = input[1].lines().skip(1).collect();
@@ -300,7 +300,7 @@ impl SeedLocation {
         }
     }
 
-    fn map_seed_to_location(self: &Self, seed: u64) -> u64 {
+    fn map_seed_to_location(&self, seed: u64) -> u64 {
         print!("Seed {} -> ", seed);
 
         let mut soil = seed;

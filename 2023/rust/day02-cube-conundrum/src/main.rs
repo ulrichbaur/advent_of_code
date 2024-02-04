@@ -22,7 +22,7 @@ struct Turn {
 }
 
 impl Turn {
-    fn is_possible(self: &Self) -> bool {
+    fn is_possible(&self) -> bool {
         self.red <= RED_LIMIT && self.green <= GREEN_LIMIT && self.blue <= BLUE_LIMIT
     }
 
@@ -88,7 +88,7 @@ impl Game {
         }
     }
 
-    fn is_possible(self: &Self) -> bool {
+    fn is_possible(&self) -> bool {
         for turn in &self.turns {
             if !turn.is_possible() {
                 return false;
@@ -109,7 +109,7 @@ impl Game {
         };
         // parse turns
         let mut turns: Vec<Turn> = vec![];
-        let turn_terms: Vec<&str> = terms[1].split(";").map(|s| s.trim()).collect();
+        let turn_terms: Vec<&str> = terms[1].split(';').map(|s| s.trim()).collect();
 
         for turn_text in turn_terms {
             let turn = Turn::from(turn_text);

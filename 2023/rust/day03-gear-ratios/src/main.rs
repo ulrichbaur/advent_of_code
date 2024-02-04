@@ -15,18 +15,15 @@ fn main() {
     println!("Sum for Part 2: {}", sum2);
 }
 
-fn solve1(input: &Vec<&str>) -> u32 {
-    let mut row_index = 0;
-
+fn solve1(input: &[&str]) -> u32 {
     let mut part_numbers: Vec<PartNumber> = Vec::new();
     let mut symbols: Vec<Symbol> = Vec::new();
 
-    for line in input {
-        let mut new_part_numbers = get_part_numbers(line, row_index);
+    for (row_index, line) in input.iter().enumerate() {
+        let mut new_part_numbers = get_part_numbers(line, row_index as u32);
         part_numbers.append(&mut new_part_numbers);
-        let mut new_symbols = get_symbols(line, row_index);
+        let mut new_symbols = get_symbols(line, row_index as u32);
         symbols.append(&mut new_symbols);
-        row_index += 1;
     }
 
     let mut sum = 0;
@@ -41,18 +38,15 @@ fn solve1(input: &Vec<&str>) -> u32 {
     sum
 }
 
-fn solve2(input: &Vec<&str>) -> u32 {
-    let mut row_index = 0;
-
+fn solve2(input: &[&str]) -> u32 {
     let mut part_numbers: Vec<PartNumber> = Vec::new();
     let mut symbols: Vec<Symbol> = Vec::new();
 
-    for line in input {
-        let mut new_part_numbers = get_part_numbers(line, row_index);
+    for (row_index, line) in input.iter().enumerate() {
+        let mut new_part_numbers = get_part_numbers(line, row_index as u32);
         part_numbers.append(&mut new_part_numbers);
-        let mut new_symbols = get_symbols(line, row_index);
+        let mut new_symbols = get_symbols(line, row_index as u32);
         symbols.append(&mut new_symbols);
-        row_index += 1;
     }
 
     let gears: Vec<Symbol> = symbols.into_iter().filter(|s| s.value == '*').collect();
@@ -92,7 +86,7 @@ impl PartNumber {
             end_column: start_column + digits - 1,
         }
     }
-    fn touches(self: &Self, symbol: &Symbol) -> bool {
+    fn touches(&self, symbol: &Symbol) -> bool {
         if symbol.row > self.row + 1 || (self.row > 0 && symbol.row < self.row - 1) {
             return false;
         }
@@ -101,12 +95,12 @@ impl PartNumber {
         {
             return false;
         }
-        return true;
+        true
     }
 }
 
 impl Symbol {
-    fn touches(self: &Self, part_numbers: &Vec<PartNumber>) -> Vec<PartNumber> {
+    fn touches(&self, part_numbers: &Vec<PartNumber>) -> Vec<PartNumber> {
         let mut touched: Vec<PartNumber> = Vec::new();
         for part_number in part_numbers {
             if part_number.touches(self) {
@@ -126,18 +120,16 @@ fn get_part_numbers(input_row: &str, row: u32) -> Vec<PartNumber> {
     let mut temp = String::new();
     let mut column = 0;
     for c in input_row.chars() {
-        if c.is_digit(10) {
+        if c.is_ascii_digit() {
             temp.push(c);
-        } else {
-            if !temp.is_empty() {
-                let number: u32 = temp.parse().unwrap();
-                numbers.push(PartNumber::new(
-                    number,
-                    row,
-                    column - count_decimal_digits(number),
-                ));
-                temp.clear();
-            }
+        } else if !temp.is_empty() {
+            let number: u32 = temp.parse().unwrap();
+            numbers.push(PartNumber::new(
+                number,
+                row,
+                column - count_decimal_digits(number),
+            ));
+            temp.clear();
         }
         column += 1;
     }
@@ -156,16 +148,14 @@ fn get_part_numbers(input_row: &str, row: u32) -> Vec<PartNumber> {
 
 fn get_symbols(input_row: &str, row: u32) -> Vec<Symbol> {
     let mut symbols: Vec<Symbol> = Vec::new();
-    let mut column = 0;
-    for c in input_row.chars() {
-        if !c.is_digit(10) && c != '.' {
+    for (column, c) in input_row.chars().enumerate() {
+        if !c.is_ascii_digit() && c != '.' {
             symbols.push(Symbol {
                 value: c,
                 row,
-                column,
+                column: column as u32,
             })
         }
-        column += 1;
     }
 
     symbols

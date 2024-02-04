@@ -9,7 +9,7 @@
 // Part 2:
 // - now extrapolate at the beginning instead of the end
 fn main() {
-    let input = include_str!("../data/input.txt").lines().collect();
+    let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
 
@@ -17,7 +17,7 @@ fn main() {
     println!("Result Part 2: {}", result2);
 }
 
-fn solve1(input: &Vec<&str>) -> i64 {
+fn solve1(input: &[&str]) -> i64 {
     // for every history
     // -> parse history -> Vec<i64>
     // -> generate -> Vec<Vec<i64>>
@@ -43,7 +43,7 @@ fn solve1(input: &Vec<&str>) -> i64 {
     sum
 }
 
-fn solve2(input: &Vec<&str>) -> i64 {
+fn solve2(input: &[&str]) -> i64 {
     let mut sum = 0;
     for line in input.iter() {
         let history = parse_history(line);
@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -99,7 +99,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -108,16 +108,16 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve2(&input);
 
-        assert_eq!(result, 114);
+        assert_eq!(result, 2);
     }
 
     #[test]
     fn can_solve_part2_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2(&input);
 

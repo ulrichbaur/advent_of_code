@@ -4,11 +4,11 @@ use std::collections::HashMap;
 // Part 1:
 // - For each row
 //   - count all of the different arrangements of operational and broken spings
-//   - that meet the given criterias
+//   - that meet the given criteria
 // - Sum up counts
 // - Notation:
 //   - # -> broken, . -> operational, ? -> unknown
-//   - criterias are contiguous blocks of damaged springs
+//   - criteria are contiguous blocks of damaged springs
 //   - Example:
 //     - .??..??...?##. 1,1,3
 //     - 4 possible arrangements:
@@ -18,12 +18,12 @@ use std::collections::HashMap;
 //       - ..#..#....###.
 // Part 2:
 // - lines are folded
-// - repeat springs by 5, seperated by ? spring
+// - repeat springs by 5, separated by ? spring
 // - repeat block criteria by 5
 use itertools::{repeat_n, Itertools};
 
 fn main() {
-    let input = include_str!("../data/input.txt").lines().collect();
+    let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
     let now = std::time::Instant::now();
     let result1 = solve1_bruteforce(&input);
     println!(
@@ -41,7 +41,7 @@ fn main() {
     println!("Result Part 2: {} ({:?})", result2, now.elapsed());
 }
 
-fn solve1_bruteforce(input: &Vec<&str>) -> usize {
+fn solve1_bruteforce(input: &[&str]) -> usize {
     let mut total_solution_count = 0;
 
     // for every line
@@ -65,7 +65,7 @@ fn solve1_bruteforce(input: &Vec<&str>) -> usize {
     total_solution_count
 }
 
-fn solve1_recursion(input: &Vec<&str>) -> usize {
+fn solve1_recursion(input: &[&str]) -> usize {
     let mut total_solution_count = 0;
 
     let mut cache = HashMap::new();
@@ -79,7 +79,7 @@ fn solve1_recursion(input: &Vec<&str>) -> usize {
     total_solution_count
 }
 
-fn solve2(input: &Vec<&str>) -> usize {
+fn solve2(input: &[&str]) -> usize {
     let mut total_solution_count = 0;
 
     let mut cache = HashMap::new();
@@ -105,7 +105,7 @@ impl Puzzle {
         let parts: Vec<&str> = line.split(' ').collect();
 
         // parse springs
-        let springs: Vec<Spring> = parts[0].chars().map(|c| Spring::from(c)).collect();
+        let springs: Vec<Spring> = parts[0].chars().map(Spring::from).collect();
 
         // parse blocks
         let blocks: Vec<usize> = parts[1]
@@ -134,7 +134,7 @@ impl Puzzle {
         )
         .collect::<String>()
         .chars()
-        .map(|c| Spring::from(c))
+        .map(Spring::from)
         .collect();
 
         // parse blocks
@@ -156,14 +156,12 @@ impl Puzzle {
     }
 
     fn generate_permutations(&self) -> Vec<Vec<Spring>> {
-        let candidates = repeat_n(
+        repeat_n(
             [Spring::Operational, Spring::Damaged].into_iter(),
             self.unknown,
         )
         .multi_cartesian_product()
-        .collect();
-
-        candidates
+        .collect()
     }
 
     fn check_candidate(&self, candidate: Vec<Spring>) -> bool {
@@ -266,7 +264,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve1_bruteforce(&input);
 
@@ -275,17 +273,16 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
-        let result = solve1_bruteforce(&input);
+        let result = solve1_recursion(&input);
 
         assert_eq!(result, 7753);
     }
 
     #[test]
-    #[ignore]
     fn can_solve_part2_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve2(&input);
 
@@ -293,12 +290,11 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
     fn can_solve_part2_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2(&input);
 
-        assert_eq!(result, 0);
+        assert_eq!(result, 280_382_734_828_319);
     }
 }

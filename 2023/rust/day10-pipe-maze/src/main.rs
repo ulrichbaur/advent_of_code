@@ -17,7 +17,7 @@ use std::collections::VecDeque;
 // - Calculate the area enclosed by the loop
 // - Water can squeeze through pipes; it needs to be fully enclosed
 fn main() {
-    let input = include_str!("../data/input.txt").lines().collect();
+    let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
 
@@ -25,7 +25,7 @@ fn main() {
     println!("Result Part 2: {}", result2);
 }
 
-fn solve1(input: &Vec<&str>) -> i32 {
+fn solve1(input: &[&str]) -> i32 {
     let mut grid = get_grid(input);
 
     // determine start position and pipe type
@@ -112,9 +112,9 @@ fn solve2(input: &Vec<&str>) -> i32 {
     let big_height = big_grid.len();
 
     // init top, bottom, left, and right with empty space
-    for i in 0..big_width {
-        big_grid[i][0] = '0';
-        big_grid[i][big_height - 1] = '0';
+    for item in big_grid.iter_mut().take(big_width) {
+        item[0] = '0';
+        item[big_height - 1] = '0';
     }
     for i in 0..big_height {
         big_grid[0][i] = '0';
@@ -216,7 +216,7 @@ fn solve2(input: &Vec<&str>) -> i32 {
     big_grid.iter().flatten().filter(|&c| *c == 'I').count() as i32
 }
 
-fn get_grid(input: &Vec<&str>) -> Vec<Vec<char>> {
+fn get_grid(input: &[&str]) -> Vec<Vec<char>> {
     let height = input.len();
     let width = input[0].len();
 
@@ -236,7 +236,7 @@ fn print_grid(grid: &Vec<Vec<char>>) {
         for character in line {
             print!("{}", character);
         }
-        println!("");
+        println!();
     }
 }
 
@@ -297,10 +297,9 @@ fn get_starting_position(input: &Vec<Vec<char>>) -> Vector2D {
     let height = input.len();
     let width = input[0].len();
 
-    for row_index in 0..height {
-        for column_index in 0..width {
-            let character = input[row_index][column_index];
-            if character == 'S' {
+    for (row_index, row) in input.iter().enumerate().take(height) {
+        for (column_index, character) in row.iter().enumerate().take(width) {
+            if character == &'S' {
                 return Vector2D(row_index as i32, column_index as i32);
             }
         }
@@ -316,7 +315,7 @@ fn get_starting_pipe(grid: &mut Vec<Vec<char>>) -> Vector2D {
     'outer: for pipe_type in pipe_types {
         grid[start.0 as usize][start.1 as usize] = pipe_type;
 
-        let connected_pipes = get_connected_pipes(&grid, start);
+        let connected_pipes = get_connected_pipes(grid, start);
 
         valid_pipe = connected_pipes.len() == 2;
         if !valid_pipe {
@@ -398,7 +397,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input_1() {
-        let input = include_str!("../data/sample_input_1.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_1.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -407,7 +406,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input_2() {
-        let input = include_str!("../data/sample_input_2.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_2.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -416,7 +415,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input_3() {
-        let input = include_str!("../data/sample_input_3.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_3.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -425,7 +424,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input_4() {
-        let input = include_str!("../data/sample_input_4.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_4.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -434,7 +433,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -443,7 +442,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input_1() {
-        let input = include_str!("../data/sample_input_1.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_1.txt").lines().collect();
 
         let result = solve2(&input);
 
@@ -452,7 +451,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input_2() {
-        let input = include_str!("../data/sample_input_2.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_2.txt").lines().collect();
 
         let result = solve2(&input);
 
@@ -461,7 +460,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input_3() {
-        let input = include_str!("../data/sample_input_3.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_3.txt").lines().collect();
 
         let result = solve2(&input);
 
@@ -470,7 +469,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input_4() {
-        let input = include_str!("../data/sample_input_4.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input_4.txt").lines().collect();
 
         let result = solve2(&input);
 
@@ -479,7 +478,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2(&input);
 

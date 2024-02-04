@@ -5,7 +5,7 @@ use std::collections::HashSet;
 // - Shortest path between every pair of galaxies
 // - Image contains empty space (.) and galaxies (#)
 // - However space expands
-//   - any row or colum without galaxies should be twice as big
+//   - any row or column without galaxies should be twice as big
 // - for each pair (order doesn't matter)
 //   - find shortest path between
 //   - allowed to pass through other galaxies
@@ -40,12 +40,12 @@ fn solve_for_expansion(grid: &Grid2d<char>, expansion_factor: i64) -> i64 {
     let (empty_rows, empty_columns) = get_empty_rows_and_columns(grid);
 
     let mut total_distance = 0;
-    for i in 0..galaxy_positions.len() - 1 {
-        let left_pos = galaxy_positions[i];
-
-        for j in i + 1..galaxy_positions.len() {
-            let right_pos = galaxy_positions[j];
-
+    for (index, left_pos) in galaxy_positions
+        .iter()
+        .enumerate()
+        .take(galaxy_positions.len() - 1)
+    {
+        for right_pos in galaxy_positions.iter().skip(index + 1) {
             // calculate distance between positions
             let distance = i64::abs(left_pos.x - right_pos.x) + i64::abs(left_pos.y - right_pos.y);
 
@@ -82,9 +82,8 @@ fn get_grid(input: &Vec<&str>) -> Grid2d<char> {
     let width = input[0].len();
 
     let mut grid: Grid2d<char> = Grid2d::new(width as i64, height as i64);
-    for row_index in 0..height {
-        for column_index in 0..width {
-            let character = input[row_index].chars().nth(column_index).unwrap();
+    for (row_index, &row) in input.iter().enumerate().take(height) {
+        for (column_index, character) in row.chars().enumerate().take(width) {
             grid.set(row_index as i64, column_index as i64, character);
         }
     }
@@ -97,7 +96,7 @@ fn print_character_grid(grid: &Grid2d<char>) {
         for column in 0..grid.width {
             print!("{}", grid.at(row, column));
         }
-        println!("");
+        println!();
     }
 }
 fn get_galaxy_positions(grid: &Grid2d<char>) -> Vec<Vector2d> {
@@ -154,44 +153,44 @@ impl<T: Copy + Default> Grid2d<T> {
             data: vec![Default::default(); width as usize * height as usize],
         }
     }
-    fn is_in_bounds(self: &Self, x: i64, y: i64) -> bool {
+    fn is_in_bounds(&self, x: i64, y: i64) -> bool {
         x >= 0 && x < self.width && y >= 0 && y < self.height
     }
-    fn is_position_in_bounds(self: &Self, position: Vector2d) -> bool {
+    fn is_position_in_bounds(&self, position: Vector2d) -> bool {
         position.x >= 0 && position.x < self.width && position.y >= 0 && position.y < self.height
     }
 
-    fn at(self: &Self, x: i64, y: i64) -> T {
+    fn at(&self, x: i64, y: i64) -> T {
         let index = y as usize * self.width as usize + x as usize;
-        return self.data[index];
+        self.data[index]
     }
 
-    fn at_position(self: &Self, position: Vector2d) -> T {
+    fn at_position(&self, position: Vector2d) -> T {
         let index = self.get_index_from_coordinates(position.x, position.y);
-        return self.data[index as usize];
+        self.data[index as usize]
     }
 
-    fn at_index(self: &Self, index: i64) -> T {
-        return self.data[index as usize];
+    fn at_index(&self, index: i64) -> T {
+        self.data[index as usize]
     }
 
-    fn set(self: &mut Self, x: i64, y: i64, value: T) {
+    fn set(&mut self, x: i64, y: i64, value: T) {
         let index = y as usize * self.width as usize + x as usize;
         self.data[index] = value;
     }
 
-    fn size(self: &Self) -> i64 {
+    fn size(&self) -> i64 {
         self.width * self.height
     }
 
-    fn get_coordinates_from_index(self: &Self, index: i64) -> Vector2d {
+    fn get_coordinates_from_index(&self, index: i64) -> Vector2d {
         Vector2d {
             x: index / self.width,
             y: index % self.width,
         }
     }
 
-    fn get_index_from_coordinates(self: &Self, x: i64, y: i64) -> i64 {
+    fn get_index_from_coordinates(&self, x: i64, y: i64) -> i64 {
         y * self.width + x
     }
 }

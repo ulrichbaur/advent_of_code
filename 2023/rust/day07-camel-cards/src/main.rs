@@ -19,7 +19,7 @@ use std::fmt::Display;
 // - Joker upgrades hand type to the next best type
 // - Rest stays the same
 fn main() {
-    let input = include_str!("../data/input.txt").lines().collect();
+    let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
@@ -28,7 +28,7 @@ fn main() {
     println!("Result Part 2: {}", result2);
 }
 
-fn solve1(input: &Vec<&str>) -> u32 {
+fn solve1(input: &[&str]) -> u32 {
     let mut hands: HandVec = HandVec(vec![]);
     for line in input {
         let hand = Hand::from(line, 1);
@@ -47,7 +47,7 @@ fn solve1(input: &Vec<&str>) -> u32 {
     sum
 }
 
-fn solve2(input: &Vec<&str>) -> u32 {
+fn solve2(input: &[&str]) -> u32 {
     let mut hands: HandVec = HandVec(vec![]);
     for line in input {
         let hand = Hand::from(line, 2);
@@ -128,7 +128,7 @@ enum HandType {
 }
 
 impl HandType {
-    fn from(hand: &Vec<Card>, part: u32) -> HandType {
+    fn from(hand: &[Card], part: u32) -> HandType {
         let mut occurrences: Vec<(CardType, u32)> = vec![];
 
         match part {
@@ -318,7 +318,7 @@ impl Hand {
     }
 
     fn from(line: &str, part: u32) -> Hand {
-        let terms: Vec<&str> = line.split(" ").collect();
+        let terms: Vec<&str> = line.split(' ').collect();
         let hand_string = terms[0];
         let bid = terms[1].parse::<u32>().unwrap();
 
@@ -332,7 +332,7 @@ impl Display for HandVec {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for (i, hand) in self.0.iter().enumerate() {
             if i > 0 {
-                write!(f, "\n")?;
+                writeln!(f)?;
             }
             write!(f, "{:?} ({:?})", hand.hand_type, hand.cards)?;
         }
@@ -340,7 +340,7 @@ impl Display for HandVec {
     }
 }
 
-fn sort_vector_of_hands(hands: &mut Vec<Hand>) {
+fn sort_vector_of_hands(hands: &mut [Hand]) {
     hands.sort_by(|a, b| {
         a.hand_type
             .cmp(&b.hand_type)
@@ -358,7 +358,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -367,7 +367,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -376,7 +376,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve2(&input);
 
@@ -385,7 +385,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2(&input);
 

@@ -15,7 +15,7 @@ use std::{collections::HashMap, u64};
 // - Walk all nodes ending with A to nodes ending with Z at the same time
 // - Count steps
 fn main() {
-    let input = include_str!("../data/input.txt").lines().collect();
+    let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
 
@@ -23,7 +23,7 @@ fn main() {
     println!("Result Part 2: {}", result2);
 }
 
-fn solve1(input: &Vec<&str>) -> u32 {
+fn solve1(input: &[&str]) -> u32 {
     let mut instructions = Instructions::from(input[0]);
 
     let mut next_location: String = String::from("AAA");
@@ -32,7 +32,7 @@ fn solve1(input: &Vec<&str>) -> u32 {
 
     while next_location != goal {
         let line = search_for_line_in_input_starting_with(input, &next_location);
-        let node = Node::from(&line);
+        let node = Node::from(line);
         let next_instruction = instructions.next();
         match next_instruction {
             Instruction::Left => {
@@ -48,7 +48,7 @@ fn solve1(input: &Vec<&str>) -> u32 {
     steps
 }
 
-fn solve2_brute_force(input: &Vec<&str>) -> u32 {
+fn solve2_brute_force(input: &[&str]) -> u32 {
     let mut instructions = Instructions::from(input[0]);
 
     let mut current_locations: Vec<String> = find_all_starting_positions(input, 'A');
@@ -67,17 +67,13 @@ fn solve2_brute_force(input: &Vec<&str>) -> u32 {
         let next_instruction = instructions.next();
         for i in 0..traveling_node_count {
             let line = search_for_line_in_input_starting_with(input, &current_locations[i]);
-            let node = Node::from(&line);
+            let node = Node::from(line);
             current_locations[i] = match next_instruction {
                 Instruction::Left => node.left,
                 Instruction::Right => node.right,
             };
 
-            if current_locations[i].ends_with(goal) {
-                nodes_at_goal[i] = true;
-            } else {
-                nodes_at_goal[i] = false;
-            }
+            nodes_at_goal[i] = current_locations[i].ends_with(goal);
         }
         steps += 1;
     }
@@ -88,12 +84,12 @@ fn solve2_brute_force(input: &Vec<&str>) -> u32 {
 // Optimizations:
 // - build hashmap of nodes instead of creating nodes on the fly while walking
 // - notice that step count between end points stay the same for every walking node -> lcm
-fn solve2_optimized(input: &Vec<&str>) -> u64 {
+fn solve2_optimized(input: &[&str]) -> u64 {
     let (mut instructions, nodes) = parse_input(input);
 
     let mut current_nodes: Vec<String> = nodes
         .iter()
-        .filter_map(|(&ref s, _v)| {
+        .filter_map(|(s, _v)| {
             if s.chars().nth(2) == Some('A') {
                 Some(s.to_string())
             } else {
@@ -152,7 +148,7 @@ fn greatest_common_divider(a: u64, b: u64) -> u64 {
     a
 }
 
-fn parse_input(input: &Vec<&str>) -> (Instructions, HashMap<String, Node>) {
+fn parse_input(input: &[&str]) -> (Instructions, HashMap<String, Node>) {
     let instructions = Instructions::from(input[0]);
 
     let mut nodes: HashMap<String, Node> = HashMap::new();
@@ -166,7 +162,7 @@ fn parse_input(input: &Vec<&str>) -> (Instructions, HashMap<String, Node>) {
     (instructions, nodes)
 }
 
-fn find_all_starting_positions(input: &Vec<&str>, search_term: char) -> Vec<String> {
+fn find_all_starting_positions(input: &[&str], search_term: char) -> Vec<String> {
     input
         .iter()
         .skip(2)
@@ -175,7 +171,7 @@ fn find_all_starting_positions(input: &Vec<&str>, search_term: char) -> Vec<Stri
         .collect()
 }
 
-fn search_for_line_in_input_starting_with<'a>(input: &Vec<&'a str>, search_term: &str) -> &'a str {
+fn search_for_line_in_input_starting_with<'a>(input: &[&'a str], search_term: &str) -> &'a str {
     input
         .iter()
         .find(|s| s.starts_with(search_term))
@@ -213,7 +209,7 @@ impl Instructions {
         Instructions::new(instructions)
     }
 
-    fn next(self: &mut Self) -> Instruction {
+    fn next(&mut self) -> Instruction {
         let current_index = self.index;
         self.index = (self.index + 1) % self.instructions.len();
         self.instructions[current_index]
@@ -288,7 +284,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_sample_input() {
-        let input = include_str!("../data/sample_input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -297,7 +293,7 @@ mod tests {
 
     #[test]
     fn can_solve_part1_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve1(&input);
 
@@ -306,7 +302,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_sample_input() {
-        let input = include_str!("../data/sample_input3.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/sample_input3.txt").lines().collect();
 
         let result = solve2_optimized(&input);
 
@@ -315,7 +311,7 @@ mod tests {
 
     #[test]
     fn can_solve_part2_for_actual_input() {
-        let input = include_str!("../data/input.txt").lines().collect();
+        let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
 
         let result = solve2_optimized(&input);
 

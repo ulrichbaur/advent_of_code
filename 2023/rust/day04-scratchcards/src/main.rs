@@ -40,20 +40,20 @@
 // - Total: 30 cards
 
 fn main() {
-    let input = include_str!("../data/input.txt").lines().collect();
+    let input: Vec<&str> = include_str!("../data/input.txt").lines().collect();
     let result1 = solve1(&input);
     println!("Result Part 1: {}", result1);
     let result2 = solve2(&input);
     println!("Result Part 2: {}", result2);
 }
 
-fn solve1(input: &Vec<&str>) -> u32 {
+fn solve1(input: &[&str]) -> u32 {
     let cards = parse_input(input);
 
     cards.iter().map(|card| card.points()).sum()
 }
 
-fn solve2(input: &Vec<&str>) -> u32 {
+fn solve2(input: &[&str]) -> u32 {
     let mut card_counts = vec![1; input.len()];
     let cards = parse_input(input);
 
@@ -65,8 +65,8 @@ fn solve2(input: &Vec<&str>) -> u32 {
     card_counts.iter().sum()
 }
 
-fn parse_input(input: &Vec<&str>) -> Vec<Card> {
-    input.into_iter().map(|s| Card::from(s)).collect()
+fn parse_input(input: &[&str]) -> Vec<Card> {
+    input.iter().map(|s| Card::from(s)).collect()
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -77,7 +77,7 @@ struct Card {
 }
 
 impl Card {
-    fn matches(self: &Self) -> u32 {
+    fn matches(&self) -> u32 {
         let mut matches = 0;
         for drawn_card in &self.drawn {
             if self.winning.contains(drawn_card) {
@@ -87,15 +87,13 @@ impl Card {
         matches
     }
 
-    fn points(self: &Self) -> u32 {
+    fn points(&self) -> u32 {
         let matches = self.matches();
 
-        let points = match matches {
+        match matches {
             0 => 0,
             _ => 2_u32.pow(matches - 1),
-        };
-
-        points
+        }
     }
 
     fn from(text: &str) -> Self {
@@ -108,24 +106,24 @@ impl Card {
             Err(_) => panic!("Can't parse id from line"),
         };
 
-        let card_terms: Vec<&str> = terms[1].split("|").map(|s| s.trim()).collect();
+        let card_terms: Vec<&str> = terms[1].split('|').map(|s| s.trim()).collect();
         // parse winning cards
         let winning_cards: Vec<u32> = card_terms[0]
-            .split(" ")
+            .split(' ')
             .filter_map(|s| s.parse::<u32>().ok())
             .collect();
 
         // parse drawn cards
         let drawn_cards: Vec<u32> = card_terms[1]
-            .split(" ")
+            .split(' ')
             .filter_map(|s| s.parse::<u32>().ok())
             .collect();
 
-        return Card {
+        Card {
             id: card_id,
             winning: winning_cards,
             drawn: drawn_cards,
-        };
+        }
     }
 }
 

@@ -74,7 +74,7 @@ fn find_last_digit_in_string(s: &str) -> u32 {
 }
 
 fn match_key_to_digit(key: &str) -> u32 {
-    let result = match key {
+    match key {
         "1" | "one" => 1,
         "2" | "two" => 2,
         "3" | "three" => 3,
@@ -85,8 +85,7 @@ fn match_key_to_digit(key: &str) -> u32 {
         "8" | "eight" => 8,
         "9" | "nine" => 9,
         _ => panic!("Something else"),
-    };
-    result
+    }
 }
 
 #[cfg(test)]
