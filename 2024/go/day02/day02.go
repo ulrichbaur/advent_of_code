@@ -4,30 +4,13 @@ package main
 import (
 	"aoc/utils"
 	"fmt"
-	"strconv"
-	"strings"
 )
-
-func splitStringToIntSlice(s string) ([]int, error) {
-	parts := strings.Split(s, " ")
-
-	result := make([]int, 0, len(parts))
-
-	for _, part := range parts {
-		i, err := strconv.Atoi(part)
-		if err != nil {
-			return nil, fmt.Errorf("Error parsing string '%q' to int: %v", part, err)
-		}
-		result = append(result, i)
-	}
-	return result, nil
-}
 
 func parseReports(lines []string) [][]int {
 	var reports [][]int
 
 	for _, line := range lines {
-		report, err := splitStringToIntSlice(line)
+		report, err := utils.SplitStringToIntSlice(line)
 
 		if err != nil {
 			fmt.Println("Error parsing report:", err)
