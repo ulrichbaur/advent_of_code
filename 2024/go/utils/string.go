@@ -7,6 +7,11 @@ import (
 	"strings"
 )
 
+// IsDigit checks if character is a digit.
+func IsDigit(c rune) bool {
+	return c >= '0' && c <= '9'
+}
+
 // PrintRows prints a slice of strings row by row.
 func PrintRows(rows []string) {
 	for _, row := range rows {
@@ -15,8 +20,8 @@ func PrintRows(rows []string) {
 }
 
 // SplitStringToIntSlice splits a string into a slice of integers.
-func SplitStringToIntSlice(s string) ([]int, error) {
-	parts := strings.Split(s, " ")
+func SplitStringToIntSlice(s string, seperator string) ([]int, error) {
+	parts := strings.Split(s, seperator)
 
 	result := make([]int, 0, len(parts))
 

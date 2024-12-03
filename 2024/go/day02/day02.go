@@ -10,7 +10,7 @@ func parseReports(lines []string) [][]int {
 	var reports [][]int
 
 	for _, line := range lines {
-		report, err := utils.SplitStringToIntSlice(line)
+		report, err := utils.SplitStringToIntSlice(line, " ")
 
 		if err != nil {
 			fmt.Println("Error parsing report:", err)
