@@ -115,3 +115,82 @@ Only the **most recent** `do()` or `don't()` instruction applies. At the beginni
 `xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))`
 
 For the example, `mul(5,5)` and `mul(11,8)` are **disabled** because there is a `don't()` instruction before them.
+
+## Day 4: Ceres Search
+
+The next stop is the Ceres monitoring station. As the search for the Chief continues, a small Elf who lives on the station tugs on your shirt;
+she'd like to know if you could help her with her **word search** (your puzzle input). She only has to find one word: `XMAS`.
+
+### Part 1
+
+This word search allows words to be horizontal, vertical, diagonal, written backwards, or even overlapping other words.
+It's a little unusual, though, as you don't merely need to find one instance of `XMAS` - you need to find **all of them**.
+
+Example with irrelevant characters replaced by `.`:
+
+```
+..X...
+.SAMX.
+.A..A.
+XMAS.S
+.X....
+```
+
+Proper example:
+
+```
+MMMSXXMASM
+MSAMXMSMSA
+AMXSXMAAMM
+MSAMASMSMX
+XMASAMXAMM
+XXAMMXXAMA
+SMSMSASXSS
+SAXAMASAAA
+MAMMMXMMMM
+MXMXAXMASX
+```
+
+Gets solved to and includes `XMAS` a total of `18` times:
+
+```
+....XXMAS.
+.SAMXMS...
+...S..A...
+..A.A.MS.X
+XMASAMX.MM
+X.....XA.A
+S.S.S.S.SS
+.A.A.A.A.A
+..M.M.M.MM
+.X.X.XMASX
+```
+
+### Part 2
+
+It's actually an `X-MAS` puzzle, not an `XMAS` puzzle.
+You have to find two `MAS` in the shape of an `X`.
+One way to achieve this is like this:
+
+```
+M.S
+.A.
+M.S
+```
+
+Here's the same example from above, but this time all the `X-MAS`es have been kept instead.
+
+```
+.M.S......
+..A..MSMS.
+.M.S.MAA..
+..A.ASMSM.
+.M.S.M....
+..........
+S.S.S.S.S.
+.A.A.A.A..
+M.M.M.M.M.
+..........
+```
+
+In this example, an `X-MAS` appears `9` times.
