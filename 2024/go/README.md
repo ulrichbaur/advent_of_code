@@ -194,3 +194,88 @@ M.M.M.M.M.
 ```
 
 In this example, an `X-MAS` appears `9` times.
+
+## Day 5: Print Queue
+
+Next stop is at the North Pole printing department, that's busier than ever this close to Christmas.
+An Elf explains to you that the new **sleigh launch safety manual** updates won't print correctly.
+Safety protocols dictate that new pages for the safety manuals must be printed in a **very specific order**.
+The notation `X|Y` means that if both page number `X` and page number `Y` are to be produced as part of an update,
+page number `X` **must** be printed at some point before page number `Y`.
+
+The Elf has both the **page ordering rules** and the **pages to produce in each update** (your puzzle input),
+but can't figure out whether each update has the pages in the right order.
+
+For example:
+
+```
+47|53
+97|13
+97|61
+97|47
+75|29
+61|13
+75|53
+29|13
+97|29
+53|29
+61|53
+97|53
+61|29
+47|13
+75|47
+97|75
+47|61
+75|61
+47|29
+75|13
+53|13
+
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+75,97,47,61,53
+61,13,29
+97,13,75,29,47
+```
+
+The first section specifies the **page ordering rules**, one per line.
+The first rule, `47|53`, means that if an update includes both page number `47` and page number `53`, then page number `47` must be printed at some point before page number `53`.
+(`47` doesn't necessarily have to be **immediately** before `53`; other pages are allowed to be between them)
+
+The second section specifies the page numbers of each **update**.
+Becaue most safety manuals are different, the pages needed in the updates are different too.
+The first update, `75,47,61,53,29`, means that the update consists of page numbers `75`, `47`, `61`, `53`, and `29`.
+
+### Part 1
+
+To get the printers going as soon as possible, start by identifying **which updates are already in the right order**.
+
+For some reason. the Elves need to know the **middle page number** of each update being printed.
+Because you are currently only printing the correctly-ordered updates, you will need to find the middle page number of each correctly-ordered update.
+
+For the example above:
+
+```
+75,47,61,53,29
+97,61,53,29,13
+75,29,13
+```
+
+These have middle pages of `61`, `53`, and `29` respectively. Adding these numbers together gives `143`.
+
+Determine which updates are already in the correct order.
+**What do you get if you add up the middle page number from those correctly-ordered udates?**
+
+### Part 2
+
+For each of the **incorrectly-ordered updates**, use the page ordering rules to put the page numbers in the right order.
+
+For the example above, here are the three incorrectly-ordered updates and how they should be reordered:
+
+- `75,97,47,61,53` becomes `97,75,47,61,53`
+- `61,13,29` becomes `61,29,13`
+- `97,13,75,29,47` becomes `97,75,47,29,13`
+
+After taking **only the incorrectly-ordered updates** and ordering them correctly, their middle page numbers are `47`, `29`, and `47`.
+**What do you get if you add up the middle numbers after correctly ordering just those updates?**
