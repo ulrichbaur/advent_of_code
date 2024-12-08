@@ -279,3 +279,69 @@ For the example above, here are the three incorrectly-ordered updates and how th
 
 After taking **only the incorrectly-ordered updates** and ordering them correctly, their middle page numbers are `47`, `29`, and `47`.
 **What do you get if you add up the middle numbers after correctly ordering just those updates?**
+
+## Day 6: Guard Gallivant
+
+The next stop is the North Pole prototype suit manfucaturing lab in the year 1518.
+You have to be careful of time paradoxes, and so it will be important to avoid anyone from 1518 while the Historians search for the Chief.
+Unfortunately, a single **guard** is patrolling this part of the lab.
+
+Maybe you can predict where the guard will go ahead of time so that The Historians can search safely?
+You start by making a map (your puzzle input) of the situation.
+
+For example:
+
+```
+....#.....
+.........#
+..........
+..#.......
+.......#..
+..........
+.#..^.....
+........#.
+#.........
+......#...
+```
+
+The map shows the current position of the guard with `^` (to indicate the guard is facing up from the perspective of the map).
+Any obstructions - crates, desks, alchemical reactors, etc. - are shown as `#`.
+
+Lab guards in 1518 follow a very strict patrol protocol which involves repeatedly following these steps:
+
+- if there is something directly in front of you, turn right 90 degrees
+- otherwise, take a step forward
+
+### Part 1
+
+By predicting the guard's route, you can determine which specific positions in the lab will be in the patrol path.
+**Including the guard's starting position**, the positions visited by the guard before leaving the are marked with an `X`:
+
+```
+....#.....
+....XXXXX#
+....X...X.
+..#.X...X.
+..XXXXX#X.
+..X.X.X.X.
+.#XXXXXXX.
+.XXXXXXX#.
+#XXXXXXX..
+......#X..
+```
+
+In this example, the guard will visit `41` distinct positions on your map.
+
+Predict the path of the guard. **How many distinct positions will the guard visit beofre leaving the mapped area?**
+
+### Part 2
+
+The Historians explain that the guard's patrol area is simply too large for them to safely search the lab to search.
+Fortunately, they are **pretty sure** that adding a single new obstruction **won't** cause a time paradox.
+They'd like to place the new obstruction in such a way that the guard will get **stuck in a loop**, making the rest of the lab safe to search.
+To have the lowest chance of creating a time paradox, The Historians would like to know **all** of the possible positions for such an obstruction.
+The new obstruction can't be placed at the guard's starting position - the guard is there right now and would notice.
+
+In the example above, there are only `6` different positions where a new obstruction would cause the guard to get stuck in a loop.
+
+You need to get the guard stuck in a loop by adding a single new obstruction. **How many different positions could you choose for this obstruction?**
