@@ -345,3 +345,61 @@ The new obstruction can't be placed at the guard's starting position - the guard
 In the example above, there are only `6` different positions where a new obstruction would cause the guard to get stuck in a loop.
 
 You need to get the guard stuck in a loop by adding a single new obstruction. **How many different positions could you choose for this obstruction?**
+
+## Day 7: Bridge Repair
+
+There's a bridge that needs to be prepared.
+The puzzle input is a calibration manual where the operators have been taken out.
+You need to check for every equation if the equation is possible by using any combination of operators.
+
+For example:
+
+```
+190: 10 19
+3267: 81 40 27
+83: 17 5
+156: 15 6
+7290: 6 8 6 15
+161011: 16 10 13
+192: 17 8 14
+21037: 9 7 18 13
+292: 11 6 16 20
+```
+
+Each line represents a single equation.
+The test value appears before the colon on each line; it is your job to determine whether the remaining numbers can be combined with operators to produce the test value.
+
+Operators are **always evaluated left-to-right**, **not** according to precedence rules.
+Furthermore, numbers in the equations cannot be rearranged.
+
+## Part 1
+
+There are two operators, **add** (`+`) and **multiply** (`*`).
+
+In the example above, only three of the above equations can be made true by inserting operators:
+
+- `190: 10 19`
+- `3267: 81 40 27`
+- `292: 11 6 16 20`
+
+You need to calculate the **total calibration result**, which is the sum of the test values from just the equations that could possibly be true.
+
+In the example above, the sum of the test values for the three equations listed is `3749`.
+
+**What is the total calibration result?**
+
+## Part 2
+
+There is a **third type of operator**.
+The concatenation operator (`||`) combines the digits from its left and right inputs into a single number.
+For example, `12 || 345` would become `12345`.
+
+Three additional equations become possible with this new operator in the example:
+
+- `156: 15 6`
+- `7290: 6 8 6 15`
+- `192: 17 8 14`
+
+With this new operator, adding up all test values (including the previously valid ones!) produces a total calibration result of `11387`.
+
+**What is the total calibration result now?**
