@@ -390,3 +390,51 @@ Three additional equations become possible with this new operator in the example
 With this new operator, adding up all test values (including the previously valid ones!) produces a total calibration result of `11387`.
 
 **What is the total calibration result now?**
+
+## Day 8: Resonant Collinearity
+
+The next stop is on the roof of a top-secret Easter Bunny installation.
+There are a lot of antennas that are reconfigured to create an nefarious effect.
+The puzzle input is a map of these **antennas**.
+Each antenna is tuned to a specific **frequency** indicated by a single lowercase letter, uppercase letter, or digit.
+
+Example:
+
+```
+............
+........0...
+.....0......
+.......0....
+....0.......
+......A.....
+............
+............
+........A...
+.........A..
+............
+............
+```
+
+The signal only applies its effect at specific **antinodes** based on the resonant frequencies of the antennas.
+
+### Part 1
+
+An antinode occurs at any point that is perfectly in line with two antennas of the same frequency - but **only when one of the antenna** is **twice as far away** as the other.
+This means that for any pair of antennas with the same frequency, there are two antinodes, one on either side of them.
+
+Antennas with different frequencies don't create antinodes; `A` and `a` count as different frequencies.
+However, antinodes **can** occur at locations that contain antennas.
+
+The example has antennas with two different frequencies, and there are a total of `14` unique locations that contain an antinode.
+
+Calculate the impact of the signal.
+**How many unique locations within the bounds of the map contain an antinode?**
+
+### Part 2
+
+Now an antinode occors **at any grid position** exactly in line with at least two antennas of the same frequency, regardless of distance.
+
+The example now has `34` antinodes, including the antinodes that appear on every antenna.
+
+Calculate the impact of the signal using the updated model.
+**How many unique locations within the bounds of the map contain an antinode?**
