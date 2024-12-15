@@ -64,7 +64,7 @@ func moveGuard(guard guard) guard {
 	return next
 }
 
-func move(guard guard, field [][]rune, visited map[point][]guard) (bool, [][]rune, map[point][]guard) {
+func movePart1(guard guard, field [][]rune, visited map[point]bool) ([][]rune, map[point]bool) {
 	rowLength := len(field[0])
 	rowCount := len(field)
 
@@ -72,7 +72,30 @@ func move(guard guard, field [][]rune, visited map[point][]guard) (bool, [][]run
 		(guard.position.x == rowCount-1 && guard.direction == DirectionDown) ||
 		(guard.position.y == 0 && guard.direction == DirectionLeft) ||
 		(guard.position.y == rowLength-1 && guard.direction == DirectionRight) {
-		visited[guard.position] = append(visited[guard.position], guard)
+		visited[guard.position] = true
+		return field, visited
+	}
+
+	next := moveGuard(guard)
+
+	// is there an obstacle?
+	if isObstacle(next.position, field) {
+		guard.direction = changeDirection(guard.direction)
+		return movePart1(guard, field, visited)
+	}
+
+	visited[guard.position] = true
+	return movePart1(next, field, visited)
+}
+
+func movePart2(guard guard, field [][]rune, visited map[guard]bool) (bool, [][]rune, map[guard]bool) {
+	rowLength := len(field[0])
+	rowCount := len(field)
+
+	if (guard.position.x == 0 && guard.direction == DirectionUp) ||
+		(guard.position.x == rowCount-1 && guard.direction == DirectionDown) ||
+		(guard.position.y == 0 && guard.direction == DirectionLeft) ||
+		(guard.position.y == rowLength-1 && guard.direction == DirectionRight) {
 		return false, field, visited
 	}
 
@@ -80,24 +103,19 @@ func move(guard guard, field [][]rune, visited map[point][]guard) (bool, [][]run
 
 	// is there an obstacle?
 	if isObstacle(next.position, field) {
-		// fmt.Printf("Obstacle at %v\n", next.position)
 		guard.direction = changeDirection(guard.direction)
-		return move(guard, field, visited)
+		return movePart2(guard, field, visited)
 	}
 
 	// was I here before?
-	previousVisit, ok := visited[guard.position]
+	_, ok := visited[guard]
 
 	if ok {
-		// fmt.Println("previous Visits:", previousVisit)
-		for _, visit := range previousVisit {
-			if visit.direction == guard.direction {
-				return true, field, visited
-			}
-		}
+		return true, field, visited
 	}
-	visited[guard.position] = append(visited[guard.position], guard)
-	return move(next, field, visited)
+	visited[guard] = true
+	return movePart2(next, field, visited)
+
 }
 
 func splitStringsIntoChars(lines []string) [][]rune {
@@ -109,33 +127,31 @@ func splitStringsIntoChars(lines []string) [][]rune {
 	return chars
 }
 
-func visitPositions(grid [][]rune, start point) []point {
+func visitPositions(grid [][]rune, start point) map[point]bool {
 	g := guard{start, DirectionUp}
-	visited := make(map[point][]guard)
-	_, _, visited = move(g, grid, visited)
+	visited := make(map[point]bool)
+	_, visited = movePart1(g, grid, visited)
 
-	visitedList := make([]point, 0, len(visited))
-
-	for pos := range visited {
-		visitedList = append(visitedList, pos)
-	}
-
-	return visitedList
+	return visited
 }
 
-func calculateObstructionSpots(grid [][]rune, path []point, start point) []point {
+func calculateObstructionSpots(grid [][]rune, path map[point]bool, start point) []point {
+	visited := make([]point, 0, len(path))
+	for pos := range path {
+		visited = append(visited, pos)
+	}
 	obstructions := make([]point, 0)
 	g := guard{start, DirectionUp}
 
-	for _, pos := range path {
+	for _, pos := range visited {
 		if pos.x == start.x && pos.y == start.y {
 			continue
 		}
 
 		// place obstruction at point and check if it's a loop
 		grid[pos.x][pos.y] = '#'
-		visited := make(map[point][]guard)
-		loop, _, _ := move(g, grid, visited)
+		visited := make(map[guard]bool)
+		loop, _, _ := movePart2(g, grid, visited)
 		grid[pos.x][pos.y] = '.'
 		if loop {
 			obstructions = append(obstructions, pos)
@@ -147,14 +163,17 @@ func calculateObstructionSpots(grid [][]rune, path []point, start point) []point
 
 func solvePart1(lines []string) int {
 	defer utils.Timer("day06p1")()
+
 	start := findStartingPosition(lines)
 	grid := splitStringsIntoChars(lines)
 	visited := visitPositions(grid, start)
+
 	return len(visited)
 }
 
 func solvePart2(lines []string) int {
 	defer utils.Timer("day06p2")()
+
 	start := findStartingPosition(lines)
 	grid := splitStringsIntoChars(lines)
 	visited := visitPositions(grid, start)
