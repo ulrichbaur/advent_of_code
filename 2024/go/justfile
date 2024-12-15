@@ -1,0 +1,18 @@
+run: day1 day2 day3 day4 day5 day6 day7 day8
+
+day1:
+  go run day01/day01.go
+day2:
+  go run day02/day02.go
+day3:
+  go run day03/day03.go
+day4:
+  go run day04/day04.go
+day5:
+  go run day05/day05.go
+day6:
+  go run day06/day06.go
+day7:
+  go run day07/day07.go
+day8:
+  go run day08/day08.go

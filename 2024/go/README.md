@@ -5,8 +5,10 @@
 Example
 
 ```sh
+# run all days back to back
+just run
 # run day 1 code
-go run day01/day01.go
+just day1
 ```
 
 ## AoC Puzzles Setting for AoC 2024
