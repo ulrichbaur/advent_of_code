@@ -20,9 +20,9 @@ Each puzzle grants **one star**.
 ## Day 1: Historian Hysteria
 
 The list of locations to check is currently **empty** but there are notes and lists of historically significant locations left in the office of the **Chief Historian**.
-However, the locations are not listed by name, but by a unique number called the **location ID**.
 The Historians split into two groups, each searching the office and trying to create their own complete list of location IDs.
-By holding the two lists up **side by side** (your puzzle input), it quickly becomes clear that the lists aren't very similar.
+
+The puzzle input is two lists **side by side** of locations.
 
 ```
 3   4
@@ -35,9 +35,10 @@ By holding the two lists up **side by side** (your puzzle input), it quickly bec
 
 ### Part 1
 
-Pair up the numbers and measure how far apart they are. Pair up the **smallest number in the left list** with the **smallest number in the right list**,
-then the **second-smallest left number** with the **second-smallest right number**, and so on.
-Witin each pair, figure out **how far apart** the two numbers are; you'll need to **add up all of those distances**.
+Pair up the numbers and measure how far apart they are.
+Pair up the **smallest number in the left list** with the **smallest number in the right list**, then the **second-smallest left number** with the **second-smallest right number**, and so on.
+Within each pair, figure out **how far apart** the two numbers are; you'll need to **add up all of those distances**.
+
 For example, if you pair up a `3` from the left list with a `7` from the right list, the distance apart is `4`; if you pair up a `9` with a `3`, the distance apart is `6`.
 For the sample input, the total distance is `11` (`2 + 1 + 0 + 1 + 2 + 5`).
 
@@ -49,8 +50,8 @@ For the sample input, the total similarity score is `31` (`9 + 4 + 0 + 0 + 9 + 9
 
 ## Day 2: Red-Nosed Reports
 
-The first location is the Red-Nosed Reindeer nuclear fusion/fission plant, but there's no sign of the Chief Historian.
-However, the Red-Nosed reactor is producing some unusal data and the engineers want your help with analyzing it.
+The first location is the Red-Nosed Reindeer nuclear fusion/fission plant.
+The Red-Nosed reactor is producing some unusal data and the engineers want your help with analyzing it.
 The unusual data (your puzzle input) consists of **many reports**, one report per line.
 Each report is a list of numbers called **levels** that are seperated by spaces.
 
@@ -83,9 +84,8 @@ In the example, `4` reports (line 1 and 6 are still safe, lines 4 and 5 can be c
 
 ## Day 3: Mull It Over
 
-The next stop is the North Pole Toboggan Rental Shop. Their computers are having issues.
-The computer appears to be trying to run a program, but its memory (your puzzle input) is corrupted.
-All of the instructions have been jumbled up!
+The next stop is the North Pole Toboggan Rental Shop.
+Their computer appears to be trying to run a program, but its memory (your puzzle input) is corrupted.
 
 ```
 xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))
@@ -118,25 +118,16 @@ For the example, `mul(5,5)` and `mul(11,8)` are **disabled** because there is a 
 
 ## Day 4: Ceres Search
 
-The next stop is the Ceres monitoring station. As the search for the Chief continues, a small Elf who lives on the station tugs on your shirt;
-she'd like to know if you could help her with her **word search** (your puzzle input). She only has to find one word: `XMAS`.
+The next stop is the Ceres monitoring station.
+A small Elf wants you to help her with her **word search** (your puzzle input).
 
 ### Part 1
 
+She only has to find one word: `XMAS`.
 This word search allows words to be horizontal, vertical, diagonal, written backwards, or even overlapping other words.
 It's a little unusual, though, as you don't merely need to find one instance of `XMAS` - you need to find **all of them**.
 
-Example with irrelevant characters replaced by `.`:
-
-```
-..X...
-.SAMX.
-.A..A.
-XMAS.S
-.X....
-```
-
-Proper example:
+Example:
 
 ```
 MMMSXXMASM
@@ -197,14 +188,12 @@ In this example, an `X-MAS` appears `9` times.
 
 ## Day 5: Print Queue
 
-Next stop is at the North Pole printing department, that's busier than ever this close to Christmas.
+Next stop is at the North Pole printing department.
 An Elf explains to you that the new **sleigh launch safety manual** updates won't print correctly.
 Safety protocols dictate that new pages for the safety manuals must be printed in a **very specific order**.
-The notation `X|Y` means that if both page number `X` and page number `Y` are to be produced as part of an update,
-page number `X` **must** be printed at some point before page number `Y`.
+The notation `X|Y` means that if both page number `X` and page number `Y` are to be produced as part of an update, page number `X` **must** be printed at some point before page number `Y`.
 
-The Elf has both the **page ordering rules** and the **pages to produce in each update** (your puzzle input),
-but can't figure out whether each update has the pages in the right order.
+The Elf has both the **page ordering rules** and the **pages to produce in each update** (your puzzle input), but can't figure out whether each update has the pages in the right order.
 
 For example:
 
@@ -349,10 +338,15 @@ You need to get the guard stuck in a loop by adding a single new obstruction. **
 ## Day 7: Bridge Repair
 
 There's a bridge that needs to be prepared.
-The puzzle input is a calibration manual where the operators have been taken out.
-You need to check for every equation if the equation is possible by using any combination of operators.
+The puzzle input is a calibration manual where the operators have been taken out of the equations.
 
-For example:
+Each line represents a single equation.
+The test value appears before the colon on each line; it is your job to determine whether the remaining numbers can be combined with operators to produce the test value.
+
+Operators are **always evaluated left-to-right**, **not** according to precedence rules.
+Furthermore, numbers in the equations cannot be rearranged.
+
+Example:
 
 ```
 190: 10 19
@@ -366,12 +360,6 @@ For example:
 292: 11 6 16 20
 ```
 
-Each line represents a single equation.
-The test value appears before the colon on each line; it is your job to determine whether the remaining numbers can be combined with operators to produce the test value.
-
-Operators are **always evaluated left-to-right**, **not** according to precedence rules.
-Furthermore, numbers in the equations cannot be rearranged.
-
 ## Part 1
 
 There are two operators, **add** (`+`) and **multiply** (`*`).
@@ -383,14 +371,13 @@ In the example above, only three of the above equations can be made true by inse
 - `292: 11 6 16 20`
 
 You need to calculate the **total calibration result**, which is the sum of the test values from just the equations that could possibly be true.
-
 In the example above, the sum of the test values for the three equations listed is `3749`.
 
 **What is the total calibration result?**
 
 ## Part 2
 
-There is a **third type of operator**.
+Now, there is a **third type of operator**.
 The concatenation operator (`||`) combines the digits from its left and right inputs into a single number.
 For example, `12 || 345` would become `12345`.
 
