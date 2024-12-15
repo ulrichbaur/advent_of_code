@@ -1,4 +1,4 @@
-// AoC 2024 Day 08
+// AoC 2024 Day 08: Resonant Collinearity
 package main
 
 import (
@@ -125,8 +125,8 @@ func solvePart2(lines []string) int {
 }
 
 func main() {
-	fmt.Println("AoC 2024 - Day 8")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 08: Resonant Collinearity")
+	fmt.Println("========================================")
 
 	lines, err := utils.ReadLines("day08/day08_input.txt")
 

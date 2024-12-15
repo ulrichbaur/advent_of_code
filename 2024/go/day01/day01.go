@@ -1,4 +1,4 @@
-// AoC 2024 Day 01
+// AoC 2024 Day 01: Historian Hysteria
 package main
 
 import (
@@ -19,7 +19,7 @@ func parseLocationLists(lines []string) (*locationPairs, error) {
 	for i, line := range lines {
 		parts := strings.Fields(line)
 		if len(parts) != 2 {
-			return nil, fmt.Errorf("Invalid input, expected 2 parts in line %i: %q", i, line)
+			return nil, fmt.Errorf("Invalid input, expected 2 parts in line %d: %q", i, line)
 		}
 		for i, part := range parts {
 			num, err := strconv.Atoi(part)
@@ -59,9 +59,33 @@ func calculateSimilarityScores(locations locationPairs) []int {
 	return similarityScores
 }
 
+func solvePart1(lines []string) int {
+	defer utils.Timer("day01p1")()
+
+	locations, _ := parseLocationLists(lines)
+
+	sort.Ints(locations.left)
+	sort.Ints(locations.right)
+
+	distances := calculateDistances(*locations)
+	return utils.Sum(distances)
+}
+
+func solvePart2(lines []string) int {
+	defer utils.Timer("day01p2")()
+
+	locations, _ := parseLocationLists(lines)
+
+	sort.Ints(locations.left)
+	sort.Ints(locations.right)
+
+	distances := calculateSimilarityScores(*locations)
+	return utils.Sum(distances)
+}
+
 func main() {
-	fmt.Println("AoC 2024 - Day 1")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 01: Historian Hysteria")
+	fmt.Println("=====================================")
 
 	lines, err := utils.ReadLines("day01/day01_input.txt")
 	if err != nil {
@@ -69,18 +93,9 @@ func main() {
 		return
 	}
 
-	locations, err := parseLocationLists(lines)
-	if err != nil {
-		fmt.Println("Error parsing locations:", err)
-		return
-	}
+	totalDistance := solvePart1(lines)
+	fmt.Println("Total distance (Part 1 Solution):", totalDistance)
 
-	sort.Ints(locations.left)
-	sort.Ints(locations.right)
-
-	distances := calculateDistances(*locations)
-	fmt.Println("Total distance (Part 1 Solution):", utils.Sum(distances))
-
-	similarityScores := calculateSimilarityScores(*locations)
-	fmt.Println("Total Similarity Score (Part 2 Solution):", utils.Sum(similarityScores))
+	totalSimilarityScore := solvePart2(lines)
+	fmt.Println("Total Similarity Score (Part 2 Solution):", totalSimilarityScore)
 }

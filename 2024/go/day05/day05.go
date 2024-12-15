@@ -1,4 +1,4 @@
-// AoC 2024 Day 05
+// AoC 2024 Day 05: Print Queue
 package main
 
 import (
@@ -73,7 +73,6 @@ func checkIfUpdateIsValid(update []int, rules map[int][]int) bool {
 		for postCheckIndex := updateIndex + 1; postCheckIndex < updates; postCheckIndex++ {
 			pageToCheck := update[postCheckIndex]
 			if slices.Contains(rule, pageToCheck) {
-				// fmt.Println("CheckingAfterRules |", afterRule, "Page:", page, "pageToCheck:", pageToCheck)
 				return false
 			}
 		}
@@ -120,7 +119,7 @@ func fixUpdate(update []int, rules map[int][]int) []int {
 				swapped = true
 			}
 		}
-		if swapped == false {
+		if !swapped {
 			break
 		}
 	}
@@ -146,28 +145,26 @@ func countMiddlePages(updates [][]int) int {
 }
 
 func solvePart1(lines []string) int {
+	defer utils.Timer("day05p1")()
 	ruleLines, updateLines := splitLinesIntoTwoSections(lines)
 
 	rules := parseRules(ruleLines)
 	updates := parseUpdates(updateLines)
 
-	fmt.Println("Rules:", rules)
-	fmt.Println("Updates:", updates)
 	correctUpdates := getCorrectUpdates(updates, rules)
-	fmt.Println("Correctly-ordered Updates:", correctUpdates)
 
 	total := countMiddlePages(correctUpdates)
 	return total
 }
 
 func solvePart2(lines []string) int {
+	defer utils.Timer("day05p2")()
 	ruleLines, updateLines := splitLinesIntoTwoSections(lines)
 
 	afterRules := parseRules(ruleLines)
 	updates := parseUpdates(updateLines)
 
 	incorrectUpdates := getIncorrectUpdates(updates, afterRules)
-	fmt.Println("Incorrectly-ordered Updates:", incorrectUpdates)
 
 	fixedUpdates := fixUpdates(incorrectUpdates, afterRules)
 
@@ -176,8 +173,8 @@ func solvePart2(lines []string) int {
 }
 
 func main() {
-	fmt.Println("AoC 2024 - Day 5")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 05: Print Queue")
+	fmt.Println("==============================")
 
 	lines, err := utils.ReadLines("day05/day05_input.txt")
 
@@ -187,8 +184,8 @@ func main() {
 	}
 
 	totalPart1 := solvePart1(lines)
-	totalPart2 := solvePart2(lines)
-
 	fmt.Println("Sum of middle page numbers of correctly-ordered updates (Part 1 Solution):", totalPart1)
+
+	totalPart2 := solvePart2(lines)
 	fmt.Println("Sum of middle page numbers of fixed updates (Part 2 Solution):", totalPart2)
 }

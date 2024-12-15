@@ -1,4 +1,4 @@
-// AoC 2024 Day 02
+// AoC 2024 Day 02: Red-Nosed Reports
 package main
 
 import (
@@ -22,7 +22,7 @@ func parseReports(lines []string) [][]int {
 	return reports
 }
 
-func isMonotone(report []int) bool {
+func isReportMonotone(report []int) bool {
 	if len(report) <= 1 {
 		return true
 	}
@@ -47,7 +47,7 @@ func isMonotone(report []int) bool {
 	return true
 }
 
-func isDeltaInRange(report []int) bool {
+func isReportDeltaInRange(report []int) bool {
 	for i := range len(report) - 1 {
 		delta := utils.Abs(report[i+1] - report[i])
 		if delta > 3 {
@@ -58,10 +58,10 @@ func isDeltaInRange(report []int) bool {
 }
 
 func checkIfReportIsSafePart1(report []int) bool {
-	if !isMonotone(report) {
+	if !isReportMonotone(report) {
 		return false
 	}
-	if !isDeltaInRange(report) {
+	if !isReportDeltaInRange(report) {
 		return false
 	}
 	return true
@@ -103,9 +103,25 @@ func countSafeReportsPart2(reports [][]int) int {
 	return safeReports
 }
 
+func solvePart1(lines []string) int {
+	defer utils.Timer("day02p1")()
+
+	totalReports := parseReports(lines)
+	safeReportCount := countSafeReportsPart1(totalReports)
+	return safeReportCount
+}
+
+func solvePart2(lines []string) int {
+	defer utils.Timer("day02p2")()
+
+	totalReports := parseReports(lines)
+	safeReportCount := countSafeReportsPart2(totalReports)
+	return safeReportCount
+}
+
 func main() {
-	fmt.Println("AoC 2024 - Day 2")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 02: Red-Nosed Reports")
+	fmt.Println("====================================")
 
 	lines, err := utils.ReadLines("day02/day02_input.txt")
 	if err != nil {
@@ -113,7 +129,9 @@ func main() {
 		return
 	}
 
-	reports := parseReports(lines)
-	fmt.Println("Safe reports (Part 1 Solution):", countSafeReportsPart1(reports))
-	fmt.Println("Safe reports (Part 2 Solution):", countSafeReportsPart2(reports))
+	safeReportCountPart1 := solvePart1(lines)
+	fmt.Println("Safe reports (Part 1 Solution):", safeReportCountPart1)
+
+	safeReportCountPart2 := solvePart2(lines)
+	fmt.Println("Safe reports within tolerance (Part 2 Solution):", safeReportCountPart2)
 }

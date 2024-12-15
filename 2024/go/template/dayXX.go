@@ -22,7 +22,7 @@ func solvePart2(lines []string) int {
 
 func main() {
 	fmt.Println("AoC 2024 - Day XX")
-	fmt.Println("==================")
+	fmt.Println("=================")
 
 	lines, err := utils.ReadLines("day08/dayXX_sample.txt")
 

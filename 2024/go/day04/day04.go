@@ -1,4 +1,4 @@
-// AoC 2024 Day 04
+// AoC 2024 Day 04: Ceres Search
 package main
 
 import (
@@ -7,91 +7,15 @@ import (
 	"strings"
 )
 
-func transposeRows(rows []string) []string {
-	columnLen := len(rows[0])
-	columns := make([]string, columnLen)
+func solvePart1(lines []string) int {
+	defer utils.Timer("day04p1")()
 
-	for colIndex := 0; colIndex < columnLen; colIndex++ {
-		str := ""
-		for _, row := range rows {
-			str += string(row[colIndex])
-		}
-		columns[colIndex] = str
-	}
-	return columns
-}
-
-// createDiagonalsLeftToRight creates a diagonal from the bottom left to the top right
-//
-//	    x
-//	  x
-//	x
-func createDiagonalsLeftToRight(rows []string) []string {
-	rowLen := len(rows)
-	columnLen := len(rows[0])
-
-	diagonals := make([]string, 0)
-
-	for k := 0; k < rowLen; k++ {
-		diagonal := ""
-		for rowIndex, colIndex := k, 0; rowIndex >= 0 && colIndex < columnLen; {
-			diagonal += string(rows[rowIndex][colIndex])
-			rowIndex--
-			colIndex++
-		}
-		diagonals = append(diagonals, diagonal)
-	}
-	for k := 1; k < columnLen; k++ {
-		diagonal := ""
-		for rowIndex, colIndex := rowLen-1, k; rowIndex >= 0 && colIndex < columnLen; {
-			diagonal += string(rows[rowIndex][colIndex])
-			rowIndex--
-			colIndex++
-		}
-		diagonals = append(diagonals, diagonal)
-	}
-	return diagonals
-}
-
-// createDiagonalsRightToLeft creates a diagonal from the top left to the bottom right
-//
-//	x
-//	  x
-//	    x
-func createDiagonalsRightToLeft(rows []string) []string {
-	rowLen := len(rows)
-	columnLen := len(rows[0])
-
-	diagonals := make([]string, 0)
-
-	for k := rowLen - 1; k >= 0; k-- {
-		diagonal := ""
-		for rowIndex, colIndex := k, 0; rowIndex < rowLen && colIndex < columnLen; {
-			diagonal += string(rows[rowIndex][colIndex])
-			rowIndex++
-			colIndex++
-		}
-		diagonals = append(diagonals, diagonal)
-	}
-	for k := 1; k < columnLen; k++ {
-		diagonal := ""
-		for rowIndex, colIndex := 0, k; rowIndex < rowLen && colIndex < columnLen; {
-			diagonal += string(rows[rowIndex][colIndex])
-			rowIndex++
-			colIndex++
-		}
-		diagonals = append(diagonals, diagonal)
-	}
-	return diagonals
-}
-
-func solvePart1(rows []string) int {
-	columns := transposeRows(rows)
-	diagonals := createDiagonalsLeftToRight(rows)
-	diagonals2 := createDiagonalsRightToLeft(rows)
+	columns := utils.TransposeRows(lines)
+	diagonals := utils.CreateDiagonalsLeftToRight(lines)
+	diagonals2 := utils.CreateDiagonalsRightToLeft(lines)
 
 	total := 0
-	for _, row := range rows {
+	for _, row := range lines {
 		total += strings.Count(row, "XMAS") + strings.Count(row, "SAMX")
 	}
 	for _, column := range columns {
@@ -106,27 +30,29 @@ func solvePart1(rows []string) int {
 	return total
 }
 
-func solvePart2(rows []string) int {
+func solvePart2(lines []string) int {
+	defer utils.Timer("day04p2")()
+
 	total := 0
 	// 1) search for "A"; skip both first and last row as well as first and last column
 	// 2) then check
 	//      - top left is either S or M, and the other one on the bottom right
 	//      - bottom left is either S or M, and the other one on the top right
 
-	rowCount := len(rows)
-	colCount := len(rows[0])
+	rowCount := len(lines)
+	colCount := len(lines[0])
 	for rowIndex := 1; rowIndex < rowCount-1; rowIndex++ {
 		colPos := 1
 		for colPos < colCount-1 {
-			pos := strings.Index(rows[rowIndex][colPos:colCount-1], "A")
+			pos := strings.Index(lines[rowIndex][colPos:colCount-1], "A")
 			if pos == -1 {
 				break
 			}
 			colIndex := colPos + pos
 			colPos = colIndex + 1
 
-			rowAbove := rows[rowIndex-1]
-			rowBelow := rows[rowIndex+1]
+			rowAbove := lines[rowIndex-1]
+			rowBelow := lines[rowIndex+1]
 			// check if top left is S or M
 			topLeft := string(rowAbove[colIndex-1])
 			bottomRight := string(rowBelow[colIndex+1])
@@ -151,8 +77,8 @@ func solvePart2(rows []string) int {
 }
 
 func main() {
-	fmt.Println("AoC 2024 - Day 4")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 04: Ceres Search")
+	fmt.Println("===============================")
 
 	lines, err := utils.ReadLines("day04/day04_input.txt")
 	if err != nil {
@@ -161,8 +87,8 @@ func main() {
 	}
 
 	totalPart1 := solvePart1(lines)
-	totalPart2 := solvePart2(lines)
-
 	fmt.Println("Total XMAS count (Part 1 Solution):", totalPart1)
+
+	totalPart2 := solvePart2(lines)
 	fmt.Println("Total X-MAS count (Part 2 Solution):", totalPart2)
 }

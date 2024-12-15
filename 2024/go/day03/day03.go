@@ -1,4 +1,4 @@
-// AoC 2024 Day 03
+// AoC 2024 Day 03: Mull It Over
 package main
 
 import (
@@ -74,16 +74,15 @@ func getInstructionCandidates(text string) []string {
 	return instructionCandidates
 }
 
-func parseInstructionLinePart1(line string) [][]int {
-	instructionCandidates := getInstructionCandidates(line)
+func parseInstructionLinePart1(s string) [][]int {
+	instructionCandidates := getInstructionCandidates(s)
 	instructions := getValidInstructions(instructionCandidates)
 	return instructions
 }
 
 func parseInstructionsPart1(lines []string) [][]int {
-	line := strings.Join(lines, "\n")
-	instructions := parseInstructionLinePart1(line)
-	fmt.Println("Valid Instructions:", len(instructions))
+	concatLine := strings.Join(lines, "\n")
+	instructions := parseInstructionLinePart1(concatLine)
 	return instructions
 }
 
@@ -106,7 +105,6 @@ func getEnabledSections(line string) [][]int {
 		}
 		linePos += endPos + startPos
 	}
-	fmt.Println("Sections:", sections)
 	return sections
 }
 
@@ -119,8 +117,27 @@ func parseInstructionLinePart2(line string) [][]int {
 		newInstructions := getValidInstructions(instructionCandidates)
 		instructions = append(instructions, newInstructions...)
 	}
-	fmt.Println("Valid Instructions:", len(instructions))
 	return instructions
+}
+
+func solvePart1(lines []string) int {
+	defer utils.Timer("day03p1")()
+	total := 0
+	instructions := parseInstructionsPart1(lines)
+	for _, instruction := range instructions {
+		total += instruction[0] * instruction[1]
+	}
+	return total
+}
+
+func solvePart2(lines []string) int {
+	defer utils.Timer("day03p2")()
+	total := 0
+	instructions := parseInstructionsPart2(lines)
+	for _, instruction := range instructions {
+		total += instruction[0] * instruction[1]
+	}
+	return total
 }
 
 func parseInstructionsPart2(lines []string) [][]int {
@@ -130,27 +147,18 @@ func parseInstructionsPart2(lines []string) [][]int {
 }
 
 func main() {
-	fmt.Println("AoC 2024 - Day 3")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 03: Mull It Over")
+	fmt.Println("===============================")
 
 	lines, err := utils.ReadLines("day03/day03_input.txt")
 	if err != nil {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	instructionsPart1 := parseInstructionsPart1(lines)
 
-	var totalPart1 int
-	for _, instruction := range instructionsPart1 {
-		totalPart1 += instruction[0] * instruction[1]
-	}
+	totalPart1 := solvePart1(lines)
 	fmt.Println("Multiplication instruction total (Part 1 Solution):", totalPart1)
 
-	instructionsPart2 := parseInstructionsPart2(lines)
-
-	var totalPart2 int
-	for _, instruction := range instructionsPart2 {
-		totalPart2 += instruction[0] * instruction[1]
-	}
+	totalPart2 := solvePart2(lines)
 	fmt.Println("Multiplication instruction total (Part 2 Solution):", totalPart2)
 }

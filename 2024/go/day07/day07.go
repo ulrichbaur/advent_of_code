@@ -1,4 +1,4 @@
-// AoC 2024 Day 07
+// AoC 2024 Day 07: Bridge Repair
 package main
 
 import (
@@ -61,7 +61,7 @@ func parseEquation(s string) equation {
 }
 
 func solvePart1(lines []string) int {
-	defer utils.Timer("day7p1")()
+	defer utils.Timer("day07p1")()
 
 	total := 0
 	for _, line := range lines {
@@ -75,7 +75,7 @@ func solvePart1(lines []string) int {
 }
 
 func solvePart2(lines []string) int {
-	defer utils.Timer("day7p2")()
+	defer utils.Timer("day07p2")()
 
 	total := 0
 	for _, line := range lines {
@@ -89,8 +89,8 @@ func solvePart2(lines []string) int {
 }
 
 func main() {
-	fmt.Println("AoC 2024 - Day 7")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 07: Bridge Repair")
+	fmt.Println("================================")
 
 	lines, err := utils.ReadLines("day07/day07_input.txt")
 
@@ -98,7 +98,6 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	// utils.PrintRows(lines)
 
 	totalPart1 := solvePart1(lines)
 	fmt.Println("Total Calibration Result (Part 1 Solution):", totalPart1)

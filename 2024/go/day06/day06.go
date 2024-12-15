@@ -1,4 +1,4 @@
-// AoC 2024 Day 06
+// AoC 2024 Day 06: Guard Gallivant
 package main
 
 import (
@@ -8,43 +8,43 @@ import (
 )
 
 // Point is defined by the row and column inside a grid.
-type Point struct {
+type point struct {
 	x int
 	y int
 }
 
-func findStartingPosition(lines []string) Point {
+func findStartingPosition(lines []string) point {
 	for i, line := range lines {
 		pos := strings.Index(line, "^")
 		if pos != -1 {
-			return Point{i, pos}
+			return point{i, pos}
 		}
 	}
-	return Point{-1, -1}
+	return point{-1, -1}
 }
 
 // Direction the guard is moving in.
-type Direction Point
+type direction point
 
 // All the possible directions to move inside the grid.
 var (
-	DirectionUp    = Direction{-1, 0}
-	DirectionRight = Direction{0, 1}
-	DirectionDown  = Direction{1, 0}
-	DirectionLeft  = Direction{0, -1}
+	DirectionUp    = direction{-1, 0}
+	DirectionRight = direction{0, 1}
+	DirectionDown  = direction{1, 0}
+	DirectionLeft  = direction{0, -1}
 )
 
 // Guard contains all information about the guard at any given point in time.
-type Guard struct {
-	position  Point
-	direction Direction
+type guard struct {
+	position  point
+	direction direction
 }
 
-func isObstacle(position Point, field [][]rune) bool {
+func isObstacle(position point, field [][]rune) bool {
 	return field[position.x][position.y] == '#' || field[position.x][position.y] == 'O'
 }
 
-func changeDirection(direction Direction) Direction {
+func changeDirection(direction direction) direction {
 	switch direction {
 	case DirectionUp:
 		return DirectionRight
@@ -57,14 +57,14 @@ func changeDirection(direction Direction) Direction {
 	}
 }
 
-func moveGuard(guard Guard) Guard {
+func moveGuard(guard guard) guard {
 	next := guard
 	next.position.x = guard.position.x + guard.direction.x
 	next.position.y = guard.position.y + guard.direction.y
 	return next
 }
 
-func move(guard Guard, field [][]rune, visited map[Point][]Guard) (bool, [][]rune, map[Point][]Guard) {
+func move(guard guard, field [][]rune, visited map[point][]guard) (bool, [][]rune, map[point][]guard) {
 	rowLength := len(field[0])
 	rowCount := len(field)
 
@@ -109,12 +109,12 @@ func splitStringsIntoChars(lines []string) [][]rune {
 	return chars
 }
 
-func visitPositions(grid [][]rune, start Point) []Point {
-	guard := Guard{start, DirectionUp}
-	visited := make(map[Point][]Guard)
-	_, _, visited = move(guard, grid, visited)
+func visitPositions(grid [][]rune, start point) []point {
+	g := guard{start, DirectionUp}
+	visited := make(map[point][]guard)
+	_, _, visited = move(g, grid, visited)
 
-	visitedList := make([]Point, 0, len(visited))
+	visitedList := make([]point, 0, len(visited))
 
 	for pos := range visited {
 		visitedList = append(visitedList, pos)
@@ -123,22 +123,22 @@ func visitPositions(grid [][]rune, start Point) []Point {
 	return visitedList
 }
 
-func calculateObstructionSpots(grid [][]rune, path []Point, start Point) []Point {
-	obstructions := make([]Point, 0)
-	guard := Guard{start, DirectionUp}
+func calculateObstructionSpots(grid [][]rune, path []point, start point) []point {
+	obstructions := make([]point, 0)
+	g := guard{start, DirectionUp}
 
-	for _, point := range path {
-		if point.x == start.x && point.y == start.y {
+	for _, pos := range path {
+		if pos.x == start.x && pos.y == start.y {
 			continue
 		}
 
 		// place obstruction at point and check if it's a loop
-		grid[point.x][point.y] = '#'
-		visited := make(map[Point][]Guard)
-		loop, _, _ := move(guard, grid, visited)
-		grid[point.x][point.y] = '.'
+		grid[pos.x][pos.y] = '#'
+		visited := make(map[point][]guard)
+		loop, _, _ := move(g, grid, visited)
+		grid[pos.x][pos.y] = '.'
 		if loop {
-			obstructions = append(obstructions, point)
+			obstructions = append(obstructions, pos)
 		}
 	}
 
@@ -146,6 +146,7 @@ func calculateObstructionSpots(grid [][]rune, path []Point, start Point) []Point
 }
 
 func solvePart1(lines []string) int {
+	defer utils.Timer("day06p1")()
 	start := findStartingPosition(lines)
 	grid := splitStringsIntoChars(lines)
 	visited := visitPositions(grid, start)
@@ -153,8 +154,8 @@ func solvePart1(lines []string) int {
 }
 
 func solvePart2(lines []string) int {
+	defer utils.Timer("day06p2")()
 	start := findStartingPosition(lines)
-
 	grid := splitStringsIntoChars(lines)
 	visited := visitPositions(grid, start)
 	obstructions := calculateObstructionSpots(grid, visited, start)
@@ -163,8 +164,8 @@ func solvePart2(lines []string) int {
 }
 
 func main() {
-	fmt.Println("AoC 2024 - Day 6")
-	fmt.Println("==================")
+	fmt.Println("AoC 2024 - Day 06: Guard Gallivant")
+	fmt.Println("==================================")
 
 	lines, err := utils.ReadLines("day06/day06_input.txt")
 
@@ -172,11 +173,11 @@ func main() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
-	utils.PrintRows(lines)
+	// utils.PrintRows(lines)
 
 	totalPart1 := solvePart1(lines)
-	totalPart2 := solvePart2(lines)
-
 	fmt.Println("Distinct positions (Part 1 Solution):", totalPart1)
+
+	totalPart2 := solvePart2(lines)
 	fmt.Println("Loop creating obstructions (Part 2 Solution):", totalPart2)
 }
