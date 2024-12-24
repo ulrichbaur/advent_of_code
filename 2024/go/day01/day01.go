@@ -14,25 +14,45 @@ type locationPairs struct {
 	right []int
 }
 
+type location struct {
+	left  int
+	right int
+}
+
+func parseLocation(line string) (location, error) {
+	left := 0
+	right := 0
+
+	parts := strings.Fields(line)
+	if len(parts) != 2 {
+		return location{left, right}, fmt.Errorf("Invalid input, expected 2 parts in line: %q", line)
+	}
+
+	for i, part := range parts {
+		num, err := strconv.Atoi(part)
+		if err != nil {
+			return location{left, right}, fmt.Errorf("Invalid number %q in %q: %v", part, line, err)
+		}
+
+		if i == 0 {
+			left = num
+		} else {
+			right = num
+		}
+	}
+
+	return location{left, right}, nil
+}
+
 func parseLocationLists(lines []string) (*locationPairs, error) {
 	var locations locationPairs
-	for i, line := range lines {
-		parts := strings.Fields(line)
-		if len(parts) != 2 {
-			return nil, fmt.Errorf("Invalid input, expected 2 parts in line %d: %q", i, line)
+	for _, line := range lines {
+		loc, err := parseLocation(line)
+		if err != nil {
+			return nil, err
 		}
-		for i, part := range parts {
-			num, err := strconv.Atoi(part)
-
-			if err != nil {
-				return nil, fmt.Errorf("Invalid number %q in %q: %v", part, line, err)
-			}
-			if i == 0 {
-				locations.left = append(locations.left, num)
-			} else {
-				locations.right = append(locations.right, num)
-			}
-		}
+		locations.left = append(locations.left, loc.left)
+		locations.right = append(locations.right, loc.right)
 	}
 
 	return &locations, nil

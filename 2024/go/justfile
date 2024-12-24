@@ -1,18 +1,43 @@
 run: day1 day2 day3 day4 day5 day6 day7 day8
 
+test: test-day1 test-day2 test-day3 test-day4 test-day5 test-day6 test-day7 test-day8
+
 day1:
   go run day01/day01.go
+test-day1:
+  go test ./day01/
+
 day2:
   go run day02/day02.go
+test-day2:
+  go test ./day02/
+
 day3:
   go run day03/day03.go
+test-day3:
+  go test ./day03/
+
 day4:
   go run day04/day04.go
+test-day4:
+  go test ./day04/
+
 day5:
   go run day05/day05.go
+test-day5:
+  go test ./day05/
+
 day6:
   go run day06/day06.go
+test-day6:
+  go test ./day06/
+
 day7:
   go run day07/day07.go
+test-day7:
+  go test ./day07/
+
 day8:
   go run day08/day08.go
+test-day8:
+  go test ./day08/
