@@ -512,3 +512,59 @@ In the example, now the checksum is `2858`.
 
 Start over, now compacting the amphipod's hard drive using this new method instead.
 **What is the resulting filesystem checksum?**
+
+## Day 10: Hoof It
+
+The next stop is at a lava producing facility on a floating island in the sky.
+There's a reindeer with a hiking guide, but most of its pages are scorched and you need to help it fill a map with hiking trails.
+
+The puzzle input is a topographic map of the surrounding area.
+The topographic map indicates the **height** at each position using a scale from `0` (lowest) to `9` (highest)
+
+Example 1:
+
+```
+0123
+1234
+8765
+9876
+```
+
+A good hiking trail is **as long as possible** and has an **even, gradual, uphill slope**.
+A hiking trail is any path that starts at height 0, ends at height 9, and always increases by a height of exactly 1 at each step.
+Hiking trails never include diagonal steps - only up, down, left, or right (from the perspective of the map).
+
+A **trailhead** is any position that starts one or more hiking trails - here, these positions will always have height `0`.
+
+Example 2:
+
+```
+89010123
+78121874
+87430965
+96549874
+45678903
+32019012
+01329801
+10456732
+```
+
+Example 1 has 1 trailhead; Example 2 has 9 trailheads.
+
+### Part 1
+
+A trailhead's **score** is the number of `9`-height positions reachable from that trailhead via a hiking trail.
+
+In example 1, the trailhead has a score of `1` resulting in a total score of `1`.
+In example 2, the trailheads have scores of `5`, `6`, `5`, `3`, `1`, `3`, `5`, `3`, and `5`. This results in a total score of `36`.
+
+**What is the sum of the scores of all trailheads on your topographic map?**
+
+### Part 2
+
+A trailhead's **rating** is the **number of distinct hiking trails** which begin at that trailhead.
+
+In example 1, the trailhead has a rating of `16` resulting in a total rating of all trailheads of `16`.
+In example 2, the trailheads have ratings of `20`, `24`, `10`, `4`, `1`, `4`, `5`, `8`, and `5`. The sum of all trailhead ratings is `81`.
+
+**What is the sum of the ratings of all trailheads?**
