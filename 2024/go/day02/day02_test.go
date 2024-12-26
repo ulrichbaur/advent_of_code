@@ -5,22 +5,46 @@ import (
 	"testing"
 )
 
-func TestSampleInputPart1(t *testing.T) {
-	lines, _ := utils.ReadLines("day02_sample.txt")
-	got := solvePart1(lines)
-	want := 2
+func TestPart1(t *testing.T) {
+	var tests = []struct {
+		name      string
+		inputFile string
+		want      int
+	}{
+		{"day 02 sample", "day02_sample.txt", 2},
+	}
 
-	if got != want {
-		t.Errorf("Got %v, want %v", got, want)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lines, _ := utils.ReadLines(tt.inputFile)
+
+			got := solvePart1(lines)
+
+			if got != tt.want {
+				t.Errorf("Got %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
 
-func TestSampleInputPart2(t *testing.T) {
-	lines, _ := utils.ReadLines("day02_sample.txt")
-	got := solvePart2(lines)
-	want := 4
+func TestPart2(t *testing.T) {
+	var tests = []struct {
+		name      string
+		inputFile string
+		want      int
+	}{
+		{"day 02 sample", "day02_sample.txt", 4},
+	}
 
-	if got != want {
-		t.Errorf("Got %v, want %v", got, want)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			lines, _ := utils.ReadLines(tt.inputFile)
+
+			got := solvePart2(lines)
+
+			if got != tt.want {
+				t.Errorf("Got %v, want %v", got, tt.want)
+			}
+		})
 	}
 }
