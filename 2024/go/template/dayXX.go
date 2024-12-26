@@ -24,7 +24,7 @@ func main() {
 	fmt.Println("AoC 2024 - Day XX")
 	fmt.Println("=================")
 
-	lines, err := utils.ReadLines("day08/dayXX_sample.txt")
+	lines, err := utils.ReadLines("dayXX/dayXX_sample.txt")
 
 	if err != nil {
 		fmt.Println("Error reading file:", err)

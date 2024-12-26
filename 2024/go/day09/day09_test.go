@@ -5,13 +5,14 @@ import (
 	"testing"
 )
 
-func TestSampleInputPart1(t *testing.T) {
+func TestPart1(t *testing.T) {
 	var tests = []struct {
 		name      string
 		inputFile string
 		want      int
 	}{
-		{"day 09 sample", "dayXX_sample.txt", 0},
+		{"day 09 sample 1", "day09_sample1.txt", 1928},
+		{"day 09 sample 2", "day09_sample2.txt", 69},
 	}
 
 	for _, tt := range tests {
@@ -27,13 +28,14 @@ func TestSampleInputPart1(t *testing.T) {
 	}
 }
 
-func TestSampleInputPart2(t *testing.T) {
+func TestPart2(t *testing.T) {
 	var tests = []struct {
 		name      string
 		inputFile string
 		want      int
 	}{
-		{"day 09 sample", "dayXX_sample.txt", 0},
+		{"day 09 sample 1", "day09_sample1.txt", 2858},
+		{"day 09 sample 2", "day09_sample2.txt", 169},
 	}
 
 	for _, tt := range tests {

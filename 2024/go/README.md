@@ -440,3 +440,75 @@ The example now has `34` antinodes, including the antinodes that appear on every
 
 Calculate the impact of the signal using the updated model.
 **How many unique locations within the bounds of the map contain an antinode?**
+
+## Day 9: Disk Fragmenter
+
+The next visit is at a group of friendly amphipods.
+One of them has a problem with his computer, his disk is full and he wants to create more contiguous free space by compacting all of the files.
+
+The puzzle input is a **disk map**.
+The disk map uses a dense format to represent the layout of **files** and **free space** on the disk.
+The digits alternate between indicating the length of a file and the length of free space.
+
+Example:
+
+```
+2333133121414131402
+```
+
+Each file on disk also has an **ID number** based on the order of the files as they appear **before** they are rearranged, starting with ID 0.
+
+### Part 1
+
+The amphipod would like to **move file blocks one at a time** from the end of the disk to the leftmost free space block (until there are no gaps remaining between file blocks).
+
+Example:
+
+```
+00...111...2...333.44.5555.6666.777.888899
+009..111...2...333.44.5555.6666.777.88889.
+0099.111...2...333.44.5555.6666.777.8888..
+00998111...2...333.44.5555.6666.777.888...
+009981118..2...333.44.5555.6666.777.88....
+0099811188.2...333.44.5555.6666.777.8.....
+009981118882...333.44.5555.6666.777.......
+0099811188827..333.44.5555.6666.77........
+00998111888277.333.44.5555.6666.7.........
+009981118882777333.44.5555.6666...........
+009981118882777333644.5555.666............
+00998111888277733364465555.66.............
+0099811188827773336446555566..............
+```
+
+The final step of this file-compacting process is to update the **filesystem checksum**.
+To calculate the checksum, add up the result of multiplying each of these blocks' position with the file ID number it contains.
+The leftmost block is in position 0. If a block contains free space, skip it instead.
+
+In the example, the checksum is `1928`.
+
+Compact the amphipod's hard drive using the process he requested.
+**What is the resulting filesystem checksum?**
+
+### Part 2
+
+The computer is running much more slowly now as the files are fragmented.
+The amphipod has a new plan; rather than move individual blocks, he'd like to try compacting the files on his disk by moving **whole files** instead.
+
+This time, attempt to move whole files to the leftmost span of free space blocks that could fit the file.
+Attempt to move each file exactly once in order of **decreasing file ID number** starting with the file with the highest file ID number.
+If there is no span of free space to the left of a file that is large enough to fit the file, the file does not move.
+
+Example:
+
+```
+00...111...2...333.44.5555.6666.777.888899
+0099.111...2...333.44.5555.6666.777.8888..
+0099.1117772...333.44.5555.6666.....8888..
+0099.111777244.333....5555.6666.....8888..
+00992111777.44.333....5555.6666.....8888..
+```
+
+In the example, now the checksum is `2858`.
+
+Start over, now compacting the amphipod's hard drive using this new method instead.
+**What is the resulting filesystem checksum?**
