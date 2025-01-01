@@ -2,13 +2,20 @@
 
 ## How to run code
 
-Example
+```sh
+# run code for all days back to back
+just run-all
+# run code for day 1
+just run day01
+```
+
+## How to run tests
 
 ```sh
-# run all days back to back
-just run
-# run day 1 code
-just day1
+# run tests for all days back to back
+just test-all
+# run test for day01
+just test day01
 ```
 
 ## AoC Puzzles Setting for AoC 2024
@@ -568,3 +575,51 @@ In example 1, the trailhead has a rating of `16` resulting in a total rating of 
 In example 2, the trailheads have ratings of `20`, `24`, `10`, `4`, `1`, `4`, `5`, `8`, and `5`. The sum of all trailhead ratings is `81`.
 
 **What is the sum of the ratings of all trailheads?**
+
+## Day 11: Plutonian Pebbles
+
+While The Historians explore infinite corridors on Pluto, you've noticed a strange set of physics-defying stones.
+
+At first glance, they seem like normal stones: they're arranged in a perfectly **straight line**, and each stone has a **number** engraved on it.
+The strange part is that every time you blink, the stones **change**.
+
+Every time you blink, the stones each **simultaneously** change according to the **first applicable rule** in this list:
+
+- If the stone is engraved with the number `0`, it is replaced by a stone engraved with the number `1`.
+- If the stone is engraved with a number that has an **even** number of digits, it is replaced by **two stones**. The left half of the digits are engraved on the new left stone, and the right half of the digits are engraved on the new right stone.
+- If none of the other rules apply, the stone is replaced by a new stone; the old stone's number **multiplied by 2024** is engraved on the new stone.
+
+No matter how the stones change, their **order is preserved**, and they stay on their perfectly straight line.
+
+Example:
+
+```
+Initial arrangement:
+125 17
+
+After 1 blink:
+253000 1 7
+
+After 2 blinks:
+253 0 2024 14168
+
+After 3 blinks:
+512072 1 20 24 28676032
+
+After 4 blinks:
+512 72 2024 2 0 2 4 2867 6032
+
+After 5 blinks:
+1036288 7 2 20 24 4048 1 4048 8096 28 67 60 32
+
+After 6 blinks:
+2097446912 14168 4048 2 0 2 4 40 48 2024 40 48 80 96 2 8 6 7 6 0 3 2
+```
+
+### Part 1
+
+Consider the arrangement of stones in front of you. **How many stones will you have after blinking 25 times?**
+
+### Part 2
+
+**How many stones would you have after blinking a total of 75 times?**
