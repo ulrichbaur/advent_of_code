@@ -623,3 +623,50 @@ Consider the arrangement of stones in front of you. **How many stones will you h
 ### Part 2
 
 **How many stones would you have after blinking a total of 75 times?**
+
+## Day 12: Garden Groups
+
+The elves would like to set up fences around each region of garden plots, but they can't figure out how much fence they need to order or how much it will cost.
+They hand you a map (your puzzle input) of the garden plots.
+
+Each garden plot grows only a single type of plant and is indicated by a single letter on your map.
+When multiple garden plots are growing the same type of plant and are touching (horizontally or vertically), they form a **region**.
+
+Example:
+
+```
+AAAA
+BBCD
+BBCC
+EEEC
+```
+
+This 4x4 arrangement includes garden plots growing five different types of plants (labeled `A`, `B`, `C`, `D`, and `E`), each grouped into their own region.
+In order to accurately calculate the cost of the fence around a single region, you need to know that region's **area** and **perimeter**.
+
+The **area** of a region is simply the number of garden plots the region contains.
+For the example, the type `A`, `B`, and `C` plants are each in a region of area `4`.
+The type `E` plants are in a region of area `3`; the type `D` plants are in a region of area `1`.
+
+The **perimeter** of a region is the number of sides of garden plots in the region that do not touch another garden plot in the same region.
+For the example, the type `A` and `C` plants are each in a region with perimeter `10`.
+The type `B` and `E` plants are each in a region with perimeter `8`.
+The lone `D` plot forms its own region with perimeter `4`.
+
+### Part 1
+
+The **price** of fence required for a region is found by **multiplying** that region's area by its perimeter.
+The total price of fencing all regions on a map is found by adding together the price of fence for every region on the map.
+
+**What is the total price of fencing all regions on your map?**
+
+### Part 2
+
+There's a **bulk discount** now.
+Under the bulk discount, instead of using the perimeter to calculate the price, you need to use the **number of sides** each region has.
+Each straight section of fence counts as a side, regardless of how long it is.
+
+For the example, the region containing type `A` plants has `4` sides, as does each of the regions containing plants of type `B`, `D`, and `E`.
+However, the more complex region containing the plants of type `C` has `8` sides!
+
+**What is the new total price of fencing all regions on your map?**
